@@ -1,0 +1,759 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="一、概念介绍在学习 runtime之前，首先要了解它的底层的一些常用的数据结构，比如isa指针  在arm64架构之前，isa就是一个普通的指针，存储着class、meta-class对象的内存地址 在arm64架构之后，对isa进行了优化，变成了一个共同体（union）结构，还使用位域来存储更多的信息  1. 共同体我们知道结构体（Struct）是一种构造类型或复杂类型，它可以包含多个类型不同的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_Runtime">
+<meta property="og:url" content="https://ghtyq.github.io/2022/03/01/iOS/%E5%A4%87%E8%80%83/Runtime&Runloop/iOS_Runtime/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="一、概念介绍在学习 runtime之前，首先要了解它的底层的一些常用的数据结构，比如isa指针  在arm64架构之前，isa就是一个普通的指针，存储着class、meta-class对象的内存地址 在arm64架构之后，对isa进行了优化，变成了一个共同体（union）结构，还使用位域来存储更多的信息  1. 共同体我们知道结构体（Struct）是一种构造类型或复杂类型，它可以包含多个类型不同的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203032148241.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203032152900.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203032157596.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203041618222.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203041705547.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203071128975.png">
+<meta property="article:published_time" content="2022-03-01T15:34:50.000Z">
+<meta property="article:modified_time" content="2022-04-13T03:36:42.966Z">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="备考">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203032148241.png">
+  
+  <title>iOS_Runtime - TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="iOS_Runtime">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-01 15:34" pubdate>
+        2022年3月1日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      13k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      40 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">iOS_Runtime</h1>
+            
+            <div class="markdown-body">
+              <h3 id="一、概念介绍"><a href="#一、概念介绍" class="headerlink" title="一、概念介绍"></a>一、概念介绍</h3><p>在学习 <code>runtime</code>之前，首先要了解它的底层的一些常用的数据结构，比如<code>isa</code>指针</p>
+<ul>
+<li>在<code>arm64</code>架构之前，<code>isa</code>就是一个普通的指针，存储着<code>class</code>、<code>meta-class</code>对象的内存地址</li>
+<li>在<code>arm64</code>架构之后，对<code>isa</code>进行了优化，变成了一个共同体（<code>union</code>）结构，还使用位域来存储更多的信息</li>
+</ul>
+<h4 id="1-共同体"><a href="#1-共同体" class="headerlink" title="1. 共同体"></a>1. 共同体</h4><p>我们知道结构体（<code>Struct</code>）是一种构造类型或复杂类型，它可以包含多个类型不同的成员。在C语言中，还有另外一种和结构体非常类似的语法，叫做<em>共用体（<code>union</code>）</em>，它的定义格式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">union</span> 共用体名&#123;</span><br>	成员列表<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>共用体也被成为联合体</p>
+</blockquote>
+<p>结构体和共用体的区别：</p>
+<p>结构体的各个成员会占用不同的内存，互相之间没有影响。而共用体所有成员共用一段内存，修改一个成员会影响其余所有成员。</p>
+<p>结构体占用的内存大于等于所有成员占用的内存之和（成员之间可能会存在缝隙）。共用体占用的内存等于最长的成员占用的内存。共用体使用的是内存覆盖技术，同一时刻只能保存一个成员的值，如果对新的成员赋值就会把原来成员呢的值覆盖掉。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">union Bits &#123;<br>    int a;<br>    double b;<br>&#125;;<br><br>union Bits bits;<br>bits.a = 1;<br>bits.b = 2.0;<br>NSLog(@&quot;bits size= %ld&quot;,sizeof(bits));<br>NSLog(@&quot;a address = %p,b address = %p&quot;,&amp;bits.a,&amp;bits.b);<br>NSLog(@&quot;a = %d, b = %f&quot;,bits.a,bits.b);<br><br>// log <br>bits size= 8<br>a address = 0x7ff7b085bf68,b address = 0x7ff7b085bf68<br>a = 0, b = 2.000000<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-位域"><a href="#2-位域" class="headerlink" title="2. 位域"></a>2. 位域</h4><p>有些数据在存储时并不需要占用一个完整的字节，只需要占用就一个或者几个二进制位即可。例如开关只有通电和断点两种状态，用0和1表示足以，也就是用一个二进制位。正是基于这种考虑，C语言又提供了一种叫做位域的数据结构。</p>
+<p>在定义结构体时，我们可以指定某个成员变量所占用的二进制位数（<code>Bit</code>）,这就是<em><strong>位域</strong></em>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bs</span> &#123;</span><br>  <span class="hljs-keyword">unsigned</span> m;<br>  <span class="hljs-keyword">unsigned</span> n:<span class="hljs-number">4</span>;<br>  <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> ch: <span class="hljs-number">6</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>:</code>后面的数字来限定成员变量占用的位数。</p>
+<h4 id="3-isa详解"><a href="#3-isa详解" class="headerlink" title="3. isa详解"></a>3. isa详解</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">union</span> <span class="hljs-title">isa_t</span> </span><br><span class="hljs-class">&#123;</span><br>    Class cls;<br>    <span class="hljs-keyword">uintptr_t</span> bits;<br>     <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span><br>        <span class="hljs-keyword">uintptr_t</span> nonpointer        : <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">uintptr_t</span> has_assoc         : <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">uintptr_t</span> has_cxx_dtor      : <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">uintptr_t</span> shiftcls          : <span class="hljs-number">33</span>; <span class="hljs-comment">// MACH_VM_MAX_ADDRESS 0x1000000000</span><br>        <span class="hljs-keyword">uintptr_t</span> magic             : <span class="hljs-number">6</span>;<br>        <span class="hljs-keyword">uintptr_t</span> weakly_referenced : <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">uintptr_t</span> deallocating      : <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">uintptr_t</span> has_sidetable_rc  : <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">uintptr_t</span> extra_rc          : <span class="hljs-number">19</span>;<br>    &#125;;<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>nonpointer</p>
+<p>0，代表普通指针，存储着class、meta-class对象的内存地址</p>
+<p>1，代表优化过，使用位域存储更多的信息</p>
+</li>
+<li><p>has_assoc</p>
+<p>是否有设置过关联对象，如果没有释放时会更快</p>
+</li>
+<li><p>has_cxx_dtor</p>
+<p>是否有c++的析构函数，如果没有释放时会更快</p>
+</li>
+<li><p>shiftcls</p>
+<p>存储着class、meta-calss对象的内存地址信息</p>
+</li>
+<li><p>magic</p>
+<p>用于在调试时分辨对象是否完成初始化</p>
+</li>
+<li><p>weakly_referenced</p>
+<p>是否被弱引用指向过，若果没有，释放时更快</p>
+</li>
+<li><p>deallocating</p>
+<p>对象是否正在释放</p>
+</li>
+<li><p>has_sidetable_rc</p>
+<p>引用计数器是否过大无法存储在isa中</p>
+<p>如果为1，那么引用计数会存储在一个叫SideTable的类的属性中</p>
+</li>
+<li><p>extra_rc</p>
+<p>里面存储的值是引用计数器减1</p>
+</li>
+</ul>
+<h4 id="4-class的结构"><a href="#4-class的结构" class="headerlink" title="4. class的结构"></a>4. class的结构</h4><img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203032148241.png" srcset="/img/loading.gif" lazyload alt="class的结构" style="zoom:67%;margin-left:10px" />
+
+<h5 id="4-1-calss-rw-t"><a href="#4-1-calss-rw-t" class="headerlink" title="4.1 calss_rw_t"></a>4.1 <strong>calss_rw_t</strong></h5><p><em>calss_rw_t</em>的<code>methods</code>、<code>properties</code>、<code>protocols</code>是二维数组，是可读可写的，包含了类的初始内容、分类的内容</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203032152900.png" srcset="/img/loading.gif" lazyload alt="calss_rw_t" style="zoom:50%;margin-left:10px" />
+
+<h5 id="4-2-class-ro-t"><a href="#4-2-class-ro-t" class="headerlink" title="4.2 class_ro_t"></a>4.2 class_ro_t</h5><p><em>class_ro_t</em>的<code>baseMethodList</code>、<code>baseProperties</code>、<code>baseProtocols</code>、<code>ivars</code>是一维数组，是可读的，包含了类的初始内容</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203032157596.png" srcset="/img/loading.gif" lazyload alt="class_ro_t" style="zoom:50%;margin-left:10px" />
+
+<h5 id="4-3-method-t"><a href="#4-3-method-t" class="headerlink" title="4.3 method_t"></a>4.3 method_t</h5><p><em>method_t</em>是对方法/函数的封装</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">method_t</span>&#123;</span><br>	SEL name;	<span class="hljs-comment">// 函数名</span><br>  <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *types;	<span class="hljs-comment">// 编码（返回值类型、参数类型）</span><br>  IMP imp; <span class="hljs-comment">// 指向函数的指针（函数地址）</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li><p><em>IMP</em>代表函数的具体实现</p>
+</li>
+<li><p><em>SEL</em>代表方法/函数名，一般叫做选择器，底层结构跟<code>char*</code>类似</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &lt;objc/runtime.h&gt;<br><br>//前提：已创建一个带有test方法的类<br>// 获取SEL<br>SEL sel1 = @selector(test);<br>SEL sel2 = sel_registerName(&quot;test&quot;);<br>// 获取SEL名称<br>NSString *sel1Name = NSStringFromSelector(sel1);<br>const char * sel2Name = sel_getName(sel2);<br>    <br>NSLog(@&quot;%p, %p&quot;,sel1,sel2);<br>NSLog(@&quot;%@, %s&quot;,sel1Name,sel2Name);<br>// log <br>0x7fff6e2268ec, 0x7fff6e2268ec<br>test, test<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>可以通过<code>@selector()</code>和<code>sel_registerName()</code>获得</li>
+<li>可以通过<code>NSStringFromSelector()</code>和<code>sel_getName()</code>转成字符串</li>
+<li>不同类中相同名字的方法，所对应的方法选择器是相同的</li>
+</ul>
+</li>
+<li><p>types</p>
+<p>types包含了函数返回值、参数编码的字符串</p>
+<table>
+<thead>
+<tr>
+<th>返回值</th>
+<th>参数1</th>
+<th>参数2</th>
+<th>…</th>
+<th>参数n</th>
+</tr>
+</thead>
+</table>
+<p>iOS提供了一种叫做<font color=orange>@encode</font>的指令，可以将具体类型表示为字符串编码。</p>
+<p>下面是部分Type-Encoding，更多内容可以参考官网<a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1">Type Encoding</a>。</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>c</td>
+<td>A char</td>
+</tr>
+<tr>
+<td>i</td>
+<td>An int</td>
+</tr>
+<tr>
+<td>s</td>
+<td>A short</td>
+</tr>
+<tr>
+<td>l</td>
+<td>A long, l is treated as a 32-bit quantity on 64-bit programs.</td>
+</tr>
+<tr>
+<td>q</td>
+<td>A long long</td>
+</tr>
+<tr>
+<td>C</td>
+<td>An unsigned char</td>
+</tr>
+<tr>
+<td>I</td>
+<td>An unsigned int</td>
+</tr>
+<tr>
+<td>S</td>
+<td>An unsigned short</td>
+</tr>
+<tr>
+<td>L</td>
+<td>An unsigned long</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>An unsigned long long</td>
+</tr>
+<tr>
+<td>f</td>
+<td>A float</td>
+</tr>
+<tr>
+<td>d</td>
+<td>A double</td>
+</tr>
+<tr>
+<td>B</td>
+<td>A C++ bool or a C99 _Bool</td>
+</tr>
+<tr>
+<td>v</td>
+<td>A void</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<h4 id="5-方法缓存"><a href="#5-方法缓存" class="headerlink" title="5. 方法缓存"></a>5. 方法缓存</h4><p>Class内部结构有一个方法缓存<font color=orange>Cache_t</font>，用散列表来缓存曾经调用过的方法，可以提高方法的查找速度。（用空间换时间）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cache_t</span>&#123;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bucket_t</span> *<span class="hljs-title">buckets</span>;</span> <span class="hljs-comment">// 散列表</span><br>    <span class="hljs-keyword">mask_t</span> _mask; <span class="hljs-comment">// 散列表的长度-1</span><br>    <span class="hljs-keyword">mask_t</span> _occupied; <span class="hljs-comment">// 已经缓存的方法数量</span><br>&#125;；<br>  <br>  <br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bucket_t</span>&#123;</span><br>    <span class="hljs-keyword">cache_key_t</span> _key; <span class="hljs-comment">// SEL作为key</span><br>    IMP imp; <span class="hljs-comment">// 函数的内存地址</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="二、objc-msgSend"><a href="#二、objc-msgSend" class="headerlink" title="二、objc_msgSend"></a>二、objc_msgSend</h3><p>OC的方法调用，其实都是转化为<code>objc_msgSend</code>函数的调用。</p>
+<p><code>objc_msgSend</code>的执行流程可以分为三大阶段：</p>
+<h4 id="1-消息发送"><a href="#1-消息发送" class="headerlink" title="1. 消息发送"></a>1. 消息发送</h4><p>消息发送流程：</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203041618222.png" srcset="/img/loading.gif" lazyload alt="消息发送流程" style="zoom:20%;margin-left:10px" />
+
+<h4 id="2-动态方法解析"><a href="#2-动态方法解析" class="headerlink" title="2. 动态方法解析"></a>2. 动态方法解析</h4><p>动态方法解析流程：</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203041705547.png" srcset="/img/loading.gif" lazyload alt="动态方法解析流程" style="zoom:30%;margin-left:60px" />
+
+<p>如果一个对象的<code>instance</code>，去调用一个没有实现的<code>instance</code>方法的话，会报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">unrecognized selector sent to instance<br></code></pre></td></tr></table></figure>
+
+<p>解决这个错误的一个方法就是动态添加实例方法的实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">-(void)other&#123;<br>    NSLog(@&quot;%s&quot;,__func__);<br>&#125;<br>// 为test方法动态添加方法的实现<br>+(BOOL)resolveInstanceMethod:(SEL)sel&#123;<br>    if (sel == @selector(test)) &#123;<br> 				Method method = class_getInstanceMethod(self, @selector(other));<br>        class_addMethod(self, sel, method_getImplementation(method), method_getTypeEncoding(method));<br>        return  YES;<br>    &#125;<br>    return [super resolveInstanceMethod:sel];<br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p><code>+resolveInstanceMethod</code>和<code>+resolveClassMethod</code>的区别在于，前者是动态的向class中添加实例方法，后者是动态的向meta-calss中添加类方法。</p>
+<h4 id="3-消息转发"><a href="#3-消息转发" class="headerlink" title="3. 消息转发"></a>3. 消息转发</h4><img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203071128975.png" srcset="/img/loading.gif" lazyload alt="消息转发流程" style="zoom:40%;margin-left:60px"/>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &quot;TPerson.h&quot;<br>#import &lt;objc/runtime.h&gt;<br>#import &quot;TStudent.h&quot;<br>@implementation TPerson<br>- (id)forwardingTargetForSelector:(SEL)aSelector&#123;//不调用的话默认返回值为nil<br>    if (aSelector == @selector(test)) &#123;<br>//        return  [[TStudent alloc]init];<br>        return  nil;<br>    &#125;<br>    return [super forwardingTargetForSelector:aSelector];<br>&#125;<br><br>// 方法签名<br>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector&#123;<br>    if (aSelector == @selector(test)) &#123;<br>        return  [NSMethodSignature signatureWithObjCTypes:&quot;v@:&quot;];<br>	      // return  [[[TStudent alloc]init] methodSignatureForSelector:@selector(test)];<br>    &#125;<br>    return  [super methodSignatureForSelector:aSelector];<br>&#125;<br><br>// NSInvocation 封装了一个方法调用，包括方法调用者、方法名、方法参数<br>- (void)forwardInvocation:(NSInvocation *)anInvocation&#123;<br>    NSLog(@&quot;123&quot;);<br>&#125;<br>@end<br></code></pre></td></tr></table></figure>
+
+<h3 id="三、Runtime-API"><a href="#三、Runtime-API" class="headerlink" title="三、Runtime API"></a>三、Runtime API</h3><h4 id="1-类："><a href="#1-类：" class="headerlink" title="1. 类："></a>1. 类：</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 获取isa指向的Class</span><br><span class="hljs-built_in">object_getClass</span>(&lt;<span class="hljs-meta">#id  _Nullable obj#&gt;)</span><br><span class="hljs-comment">// 设置isa指向的Class</span><br><span class="hljs-built_in">object_setClass</span>(&lt;<span class="hljs-meta">#id  _Nullable obj#&gt;, <span class="hljs-meta-string">&lt;#Class  _Nonnull __unsafe_unretained cls#&gt;</span>)</span><br><span class="hljs-comment">// 判断一个OC对象是否是Class</span><br><span class="hljs-built_in">object_isClass</span>(&lt;<span class="hljs-meta">#id  _Nullable obj#&gt;)</span><br><span class="hljs-comment">// 判断一个Class是否为元类</span><br><span class="hljs-built_in">class_isMetaClass</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;)<br><span class="hljs-comment">// 获取父类</span><br><span class="hljs-built_in">class_getSuperclass</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;)<br><span class="hljs-comment">// 动态创建一个类（参数：父类、类名、额外的内存空间）</span><br><span class="hljs-built_in">objc_allocateClassPair</span>(&lt;#Class  _Nullable __unsafe_unretained superclass#&gt;, &lt;<span class="hljs-meta">#const char * _Nonnull name#&gt;, <span class="hljs-meta-string">&lt;#size_t extraBytes#&gt;</span>)</span><br><span class="hljs-comment">// 注册一个类</span><br><span class="hljs-built_in">objc_registerClassPair</span>(&lt;#Class  _Nonnull __unsafe_unretained cls#&gt;)<br><span class="hljs-comment">// 销毁一个类</span><br><span class="hljs-built_in">objc_disposeClassPair</span>(&lt;#Class  _Nonnull __unsafe_unretained cls#&gt;)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">void run(id self, SEL _cmd)&#123;<br>    NSLog(@&quot;%@--%@&quot;,self,NSStringFromSelector(_cmd));<br>&#125;<br><br>// 创建类<br>Class newClass =  objc_allocateClassPair([NSObject class], &quot;TStudent&quot;, 0);<br>// 添加成员变量<br>class_addIvar(newClass, &quot;_age&quot;, 4, 1, @encode(int));<br>// 添加方法<br>class_addMethod(newClass, @selector(run), (IMP)run, &quot;v@:&quot;);<br>// 注册类<br>// 类对象一旦注册完毕就不能再添加成员变量（成员变量时ro只读的）但是可以再添加方法（方法时rw）<br>objc_registerClassPair(newClass);<br>id student = [[newClass alloc]init];<br>[student setValue:@10 forKey:@&quot;age&quot;];<br>[student run];<br>    <br>NSLog(@&quot;%@&quot;,[student valueForKey:@&quot;age&quot;]);<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-成员变量"><a href="#2-成员变量" class="headerlink" title="2. 成员变量"></a>2. 成员变量</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 获取一个实例变量信息</span><br><span class="hljs-built_in">class_getInstanceVariable</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;<span class="hljs-meta">#const char * _Nonnull name#&gt;)</span><br><span class="hljs-comment">// 拷贝实例变量列表（最后需要调用free释放）</span><br><span class="hljs-built_in">class_copyIvarList</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;<span class="hljs-meta">#unsigned int * _Nullable outCount#&gt;)</span><br><span class="hljs-comment">// 设置和获取成员变量的值</span><br><span class="hljs-built_in">object_setIvar</span>(&lt;<span class="hljs-meta">#id  _Nullable obj#&gt;, <span class="hljs-meta-string">&lt;#Ivar  _Nonnull ivar#&gt;</span>, <span class="hljs-meta-string">&lt;#id  _Nullable value#&gt;</span>)</span><br><span class="hljs-built_in">object_getIvar</span>(&lt;<span class="hljs-meta">#id  _Nullable obj#&gt;, <span class="hljs-meta-string">&lt;#Ivar  _Nonnull ivar#&gt;</span>)</span><br><span class="hljs-comment">// 动态添加成员变量（已经注册的类不能动态添加成员变量）</span><br><span class="hljs-built_in">class_addIvar</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;<span class="hljs-meta">#const char * _Nonnull name#&gt;, <span class="hljs-meta-string">&lt;#size_t size#&gt;</span>, <span class="hljs-meta-string">&lt;#uint8_t alignment#&gt;</span>, <span class="hljs-meta-string">&lt;#const char * _Nullable types#&gt;</span>)</span><br><span class="hljs-comment">// 获取成员变量的相关信息</span><br><span class="hljs-built_in">ivar_getName</span>(&lt;#Ivar  _Nonnull v#&gt;)<br><span class="hljs-built_in">ivar_getTypeEncoding</span>(&lt;#Ivar  _Nonnull v#&gt;)<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-属性"><a href="#3-属性" class="headerlink" title="3. 属性"></a>3. 属性</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 获取一个属性</span><br><span class="hljs-built_in">class_getProperty</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;<span class="hljs-meta">#const char * _Nonnull name#&gt;)</span><br><span class="hljs-comment">// 拷贝属性列表（最后需要调用free释放）</span><br><span class="hljs-built_in">class_copyPropertyList</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;<span class="hljs-meta">#unsigned int * _Nullable outCount#&gt;)</span><br><span class="hljs-comment">// 动态添加属性</span><br><span class="hljs-built_in">class_addProperty</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;<span class="hljs-meta">#const char * _Nonnull name#&gt;, <span class="hljs-meta-string">&lt;#const objc_property_attribute_t * _Nullable attributes#&gt;</span>, <span class="hljs-meta-string">&lt;#unsigned int attributeCount#&gt;</span>)</span><br><span class="hljs-comment">// 动态替换属性</span><br><span class="hljs-built_in">class_replaceProperty</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;<span class="hljs-meta">#const char * _Nonnull name#&gt;, <span class="hljs-meta-string">&lt;#const objc_property_attribute_t * _Nullable attributes#&gt;</span>, <span class="hljs-meta-string">&lt;#unsigned int attributeCount#&gt;</span>)</span><br><span class="hljs-comment">// 获取属性的一些信息</span><br><span class="hljs-built_in">property_getName</span>(&lt;#<span class="hljs-keyword">objc_property_t</span>  _Nonnull property#&gt;)<br><span class="hljs-built_in">property_getAttributes</span>(&lt;#<span class="hljs-keyword">objc_property_t</span>  _Nonnull property#&gt;)<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-方法"><a href="#4-方法" class="headerlink" title="4. 方法"></a>4. 方法</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 获取一个实例方法、类方法</span><br><span class="hljs-built_in">class_getInstanceMethod</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;#SEL  _Nonnull name#&gt;)<br><span class="hljs-built_in">class_getClassMethod</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;#SEL  _Nonnull name#&gt;)<br><span class="hljs-comment">// 方法实现相关操作</span><br><span class="hljs-built_in">class_getMethodImplementation</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;#SEL  _Nonnull name#&gt;)<br><span class="hljs-built_in">method_setImplementation</span>(&lt;#Method  _Nonnull m#&gt;, &lt;#IMP  _Nonnull imp#&gt;)<br><span class="hljs-built_in">method_exchangeImplementations</span>(&lt;#Method  _Nonnull m1#&gt;, &lt;#Method  _Nonnull m2#&gt;)<br><span class="hljs-comment">// 拷贝方法列表</span><br><span class="hljs-built_in">class_copyMethodList</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;<span class="hljs-meta">#unsigned int * _Nullable outCount#&gt;)</span><br><span class="hljs-comment">// 动态添加方法</span><br><span class="hljs-built_in">class_addMethod</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;#SEL  _Nonnull name#&gt;, &lt;#IMP  _Nonnull imp#&gt;, &lt;<span class="hljs-meta">#const char * _Nullable types#&gt;)</span><br><span class="hljs-comment">// 动态替换方法</span><br><span class="hljs-built_in">class_replaceMethod</span>(&lt;#Class  _Nullable __unsafe_unretained cls#&gt;, &lt;#SEL  _Nonnull name#&gt;, &lt;#IMP  _Nonnull imp#&gt;, &lt;<span class="hljs-meta">#const char * _Nullable types#&gt;)</span><br><span class="hljs-comment">// 获取方法的相关信息（带有copy的需要调用free释放）</span><br><span class="hljs-built_in">method_getName</span>(&lt;#Method  _Nonnull m#&gt;)<br><span class="hljs-built_in">method_getImplementation</span>(&lt;#Method  _Nonnull m#&gt;)<br><span class="hljs-built_in">method_getTypeEncoding</span>(&lt;#Method  _Nonnull m#&gt;)<br><span class="hljs-built_in">method_getNumberOfArguments</span>(&lt;#Method  _Nonnull m#&gt;)<br><span class="hljs-built_in">method_copyReturnType</span>(&lt;#Method  _Nonnull m#&gt;)<br><span class="hljs-built_in">method_copyArgumentType</span>(&lt;#Method  _Nonnull m#&gt;, &lt;<span class="hljs-meta">#unsigned int index#&gt;)</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="三、面试题"><a href="#三、面试题" class="headerlink" title="三、面试题"></a>三、面试题</h3><h4 id="1-讲一下OC的消息机制？"><a href="#1-讲一下OC的消息机制？" class="headerlink" title="1. 讲一下OC的消息机制？"></a>1. 讲一下OC的消息机制？</h4><p>oc的方法调用其实都是objc_msgSend函数的调用，给reciver（调用者）发送一条消息（selector方法名）</p>
+<p>objc_msgSend底层有3大阶段：消息发送（当前类、父类查找）、动态方法解析、消息转发</p>
+<h4 id="2-消息转发机制流程？"><a href="#2-消息转发机制流程？" class="headerlink" title="2. 消息转发机制流程？"></a>2. 消息转发机制流程？</h4><h4 id="3-什么是Runtime-平时项目中有用过么？"><a href="#3-什么是Runtime-平时项目中有用过么？" class="headerlink" title="3. 什么是Runtime?平时项目中有用过么？"></a>3. 什么是Runtime?平时项目中有用过么？</h4><p>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行，OC的动态性就是由<code>Runtime</code>支撑来实现的，<code>Runtime</code>是一套C语言的API，封装了很多动态性相关的函数。平时我们编写的OC代码，底层都是转换成<code>Runtime</code> API进行调用。</p>
+<p>具体应用：</p>
+<ul>
+<li>利用关联对象（AssociatedObject）给分类添加属性。</li>
+<li>遍历类的所有成员变量（修改textfield的占位颜色、字典转模型、自动归档解档）。</li>
+<li>交换方法实现（交换系统的方法）。</li>
+<li>利用消息转发机制解决方法找不到的异常问题。</li>
+</ul>
+<h4 id="4-self-class-和-super-class-的区别？"><a href="#4-self-class-和-super-class-的区别？" class="headerlink" title="4. [self class]和[super class]的区别？"></a>4. [self class]和[super class]的区别？</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">//已知<br>@interface TPerson: NSObject;<br>@end<br>@interface TStudent: TPerson;<br>@end<br>  <br>#import &quot;TStudent.h&quot;  <br>@implementation<br>// 求下面init中的输出?<br>-(instancetype)init&#123;<br>    if (self = [super init]) &#123;<br>        NSLog(@&quot;[self class] = %@&quot;,[self class]);// TStudent<br>        NSLog(@&quot;[self superclass] = %@&quot;,[self superclass]);// TPerson<br>        NSLog(@&quot;[super class] = %@&quot;,[super class ]);// TStudent<br>        NSLog(@&quot;[super superclass] = %@&quot;,[super superclass]);// TPerson<br>    &#125;<br>    return  self;<br>&#125;<br>@end<br></code></pre></td></tr></table></figure>
+
+<p>上面这段init代码的底层实现如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">static</span> instancetype _I_TStudent_init(TStudent * self, SEL _cmd) &#123;<br>    <span class="hljs-keyword">if</span> (self = ((TStudent *(*)(__rw_objc_super *, SEL))(<span class="hljs-keyword">void</span> *)objc_msgSendSuper)((__rw_objc_super)&#123;(id)self, (id)<span class="hljs-built_in">class_getSuperclass</span>(<span class="hljs-built_in">objc_getClass</span>(<span class="hljs-string">&quot;TStudent&quot;</span>))&#125;, <span class="hljs-built_in">sel_registerName</span>(<span class="hljs-string">&quot;init&quot;</span>))) &#123;<br>      <br>      <span class="hljs-built_in">NSLog</span>((NSString *)&amp;__NSConstantStringImpl__var_folders_dr_y6z2zsxs4m9bxrqxwcdchsnw0000gn_T_TStudent_7e015b_mi_0,((<span class="hljs-built_in">Class</span> (*)(id, SEL))(<span class="hljs-keyword">void</span> *)objc_msgSend)((id)self, <span class="hljs-built_in">sel_registerName</span>(<span class="hljs-string">&quot;class&quot;</span>)));<br>      <br>      <span class="hljs-built_in">NSLog</span>((NSString *)&amp;__NSConstantStringImpl__var_folders_dr_y6z2zsxs4m9bxrqxwcdchsnw0000gn_T_TStudent_7e015b_mi_1,((<span class="hljs-built_in">Class</span> (*)(id, SEL))(<span class="hljs-keyword">void</span> *)objc_msgSend)((id)self, <span class="hljs-built_in">sel_registerName</span>(<span class="hljs-string">&quot;superclass&quot;</span>)));<br>      <br>      <span class="hljs-built_in">NSLog</span>((NSString *)&amp;__NSConstantStringImpl__var_folders_dr_y6z2zsxs4m9bxrqxwcdchsnw0000gn_T_TStudent_7e015b_mi_2,((<span class="hljs-built_in">Class</span> (*)(__rw_objc_super *, SEL))(<span class="hljs-keyword">void</span> *)objc_msgSendSuper)((__rw_objc_super)&#123;(id)self, (id)<span class="hljs-built_in">class_getSuperclass</span>(<span class="hljs-built_in">objc_getClass</span>(<span class="hljs-string">&quot;TStudent&quot;</span>))&#125;, <span class="hljs-built_in">sel_registerName</span>(<span class="hljs-string">&quot;class&quot;</span>)));<br>        <br>      <span class="hljs-built_in">NSLog</span>((NSString *)&amp;__NSConstantStringImpl__var_folders_dr_y6z2zsxs4m9bxrqxwcdchsnw0000gn_T_TStudent_7e015b_mi_3,((<span class="hljs-built_in">Class</span> (*)(__rw_objc_super *, SEL))(<span class="hljs-keyword">void</span> *)objc_msgSendSuper)((__rw_objc_super)&#123;(id)self, (id)<span class="hljs-built_in">class_getSuperclass</span>(<span class="hljs-built_in">objc_getClass</span>(<span class="hljs-string">&quot;TStudent&quot;</span>))&#125;, <span class="hljs-built_in">sel_registerName</span>(<span class="hljs-string">&quot;superclass&quot;</span>)));<br>    &#125;<br>    <span class="hljs-keyword">return</span> self;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们可以看到<code>[super class]</code>底层调用的是<code>objc_msgSendSuper</code>方法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">objc_msgSendSuper(struct objc_super * _Nonnull super, SEL _Nonnull op, ...)<br></code></pre></td></tr></table></figure>
+
+<p>我们进入<code>objc4</code>源码可以看到<code>objc_msgSendSuper</code>方法的两个参数：</p>
+<ul>
+<li><p>struct objc_super</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">objc_super</span> &#123;</span><br>    <span class="hljs-comment">/// Specifies an instance of a class.</span><br>    __unsafe_unretained _Nonnull id receiver;<br><br>    <span class="hljs-comment">/// Specifies the particular superclass of the instance to message. </span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> !defined(__cplusplus)  &amp;&amp;  !__OBJC2__</span><br>    <span class="hljs-comment">/* For compatibility with old objc-runtime.h header */</span><br>    __unsafe_unretained _Nonnull Class <span class="hljs-class"><span class="hljs-keyword">class</span>;</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span><br>    __unsafe_unretained _Nonnull Class super_class;<br><span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span><br>    <span class="hljs-comment">/* super_class is the first class to search */</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><code>reciver</code>: 消息接收者</p>
+<p><code>super_class</code> : 告诉编译器方法查找从<code>superClass</code>开始（正常的话是<code>class</code>-&gt;<code>superClass</code>）</p>
+</li>
+<li><p>SEL</p>
+</li>
+</ul>
+<p>从init的底层源码中我们可以看到：</p>
+<ol>
+<li><p><code>[super class]</code>、<code>[super superclass]</code>的消息接收者始终都是<code>self</code>。</p>
+</li>
+<li><p><code>objc_msgSendSuper</code>方法通过传入的<code>super_class</code>只是让编译器知道从哪个地方进行方法查找。</p>
+</li>
+</ol>
+<p>结论：</p>
+<p><code>[self class]</code>、[super calss]接收消息的对象都是<code>self</code>，只是查找方法的起始位置不同，最终都是找到<code>NSObject</code>的<code>class</code>方法。因此返回的都是父类<code>TPerson</code>。</p>
+<p><code>[self superclass]</code>、<code>[super supercalss]</code>同理。</p>
+<h4 id="5-isKindOfClass和isMemberOfClass的区别？"><a href="#5-isKindOfClass和isMemberOfClass的区别？" class="headerlink" title="5. isKindOfClass和isMemberOfClass的区别？"></a>5. isKindOfClass和isMemberOfClass的区别？</h4><p>对象方法底层实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 实例对象的类 是否等于cls<br>- (BOOL)isMemberOfClass:(Class)cls &#123;<br>    return [self class] == cls;<br>&#125;<br>// 实例对象的类、父类、父类的父类等是否等于cls<br>- (BOOL)isKindOfClass:(Class)cls &#123;<br>    for (Class tcls = [self class]; tcls; tcls = tcls-&gt;superclass) &#123;<br>        if (tcls == cls) return YES;<br>    &#125;<br>    return NO;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>类方法的底层实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">//类的meta-class是否等于cls<br>+ (BOOL)isMemberOfClass:(Class)cls &#123;<br>    return object_getClass((id)self) == cls;<br>&#125;<br>// 类meta-calss、父类的meta-class、父类的父类的meta-class等是否等于cls<br>+ (BOOL)isKindOfClass:(Class)cls &#123;<br>    for (Class tcls = object_getClass((id)self); tcls; tcls = tcls-&gt;superclass) &#123;<br>        if (tcls == cls) return YES;<br>    &#125;<br>    return NO;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">NSLog(@&quot;%d&quot;,[NSObject isKindOfClass:[NSObject class]]);<br>// 1<br>//NSObject的meta-calss的superclass指向了NSObject<br></code></pre></td></tr></table></figure>
+
+<p><font color=orange>本篇内容出自小码哥视频,只为方便自己以后查阅！</font></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://c.biancheng.net/cpp/html/2932.html">C语言中文网</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1">Type Encoding</a></li>
+<li><a href="">小码哥视频</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/iOS/">iOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/02/%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">位运算</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/23/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_OC%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%9C%AC%E8%B4%A8/">
+                        <span class="hidden-mobile">iOS_OC对象的本质</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"391336e02715065926b8","clientSecret":"daef7899351589e3c4f4abec997213f787648d4f","repo":"GHTYQ.github.io","owner":"GHTYQ","admin":["GHTYQ"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'e76cbf02c3e2c8e172acf8f351b91576'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

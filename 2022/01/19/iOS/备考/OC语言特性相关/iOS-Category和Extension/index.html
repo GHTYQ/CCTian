@@ -1,0 +1,589 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="一. Category（分类）1. Category可以添加哪些内容？ 实例方法 类方法 协议 属性（只有setter和getter方法的声明，没有实现，没有成员变量）  2. Category实现原理Category的底层结构： 12345678910111213141516struct category_t &amp;#123;       const char *name;       classr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_Category和Extension">
+<meta property="og:url" content="https://ghtyq.github.io/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-Category%E5%92%8CExtension/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="一. Category（分类）1. Category可以添加哪些内容？ 实例方法 类方法 协议 属性（只有setter和getter方法的声明，没有实现，没有成员变量）  2. Category实现原理Category的底层结构： 12345678910111213141516struct category_t &amp;#123;       const char *name;       classr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202181155272.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202231652896.png">
+<meta property="article:published_time" content="2022-01-19T15:32:55.000Z">
+<meta property="article:modified_time" content="2022-04-13T03:36:42.966Z">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="备考">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202181155272.png">
+  
+  <title>iOS_Category和Extension - TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="iOS_Category和Extension">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-19 15:32" pubdate>
+        2022年1月19日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">iOS_Category和Extension</h1>
+            
+            <div class="markdown-body">
+              <h3 id="一-Category（分类）"><a href="#一-Category（分类）" class="headerlink" title="一. Category（分类）"></a>一. Category（分类）</h3><h4 id="1-Category可以添加哪些内容？"><a href="#1-Category可以添加哪些内容？" class="headerlink" title="1. Category可以添加哪些内容？"></a>1. Category可以添加哪些内容？</h4><ol>
+<li>实例方法</li>
+<li>类方法</li>
+<li>协议</li>
+<li>属性（只有<code>setter</code>和<code>getter</code>方法的声明，没有实现，没有成员变量）</li>
+</ol>
+<h4 id="2-Category实现原理"><a href="#2-Category实现原理" class="headerlink" title="2. Category实现原理"></a>2. Category实现原理</h4><p>Category的底层结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">struct category_t &#123;<br>       const char *name;<br>       classref_t cls;<br>       struct method_list_t *instanceMethods;<br>       struct method_list_t *classMethods;<br>       struct protocol_list_t *protocols;<br>       struct property_list_t *instanceProperties;<br>       // Fields below this point are not always present on disk<br>       struct property_list_t *_classsProperties;<br>        <br>       method_list *methodsForMeta(bool isMeta)&#123;<br>           if (isMeta) return classMethods;<br>           else return instanceMethods;<br>       &#125;<br>   &#125;<br>   property_list_t *propertiesForMeta(bool isMeta, struct header_info *hi);<br></code></pre></td></tr></table></figure>
+
+<p>对象方法及类方法调用的本质:</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202181155272.png" srcset="/img/loading.gif" lazyload alt="isa指针" style="zoom:110%;margin-left:10px" />
+
+<p>那么<code>category_t</code>结构体是什么时候放到<code>class</code>里面的呢? 在objc运行时的源码中我们可以看到，系统为我们做了以下操作：</p>
+<ol>
+<li>通过runtime加载某个类的所有category数据</li>
+<li>把所有category的方法、属性、协议数据，分别合并到一个新的用于存储方法、属性、协议的大数组中（后面参与编译的category数据，会在数组前面）</li>
+<li>将合并后的数据（方法、属性、协议），分别插入到类原有的数据前面</li>
+</ol>
+<p>其中的添加过程的源码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs objc"><span class="hljs-keyword">void</span> attachLists(List* <span class="hljs-keyword">const</span> * addedLists, uint32_t addedCount) &#123;<br>     <span class="hljs-keyword">if</span> (addedCount == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>;<br><br>     <span class="hljs-keyword">if</span> (hasArray()) &#123;<br>         <span class="hljs-comment">// many lists -&gt; many lists</span><br>         uint32_t oldCount = array()-&gt;count;<br>         uint32_t newCount = oldCount + addedCount;<br>         setArray((array_t *)realloc(array(), array_t::byteSize(newCount)));<br>         array()-&gt;count = newCount;<br>        <span class="hljs-comment">//根据所有分类的方法列表的数量addedCount，将类对象原有方法列表的内存地址向后移动addedCount位</span><br>         memmove(array()-&gt;lists + addedCount, array()-&gt;lists, <br>                    oldCount * <span class="hljs-keyword">sizeof</span>(array()-&gt;lists[<span class="hljs-number">0</span>]));<br>       <span class="hljs-comment">//将所有对象的方法列表copy到前addedCount位上</span><br>         memcpy(array()-&gt;lists, addedLists, <br>                   addedCount * <span class="hljs-keyword">sizeof</span>(array()-&gt;lists[<span class="hljs-number">0</span>]));<br>     &#125;<br>     <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!list  &amp;&amp;  addedCount == <span class="hljs-number">1</span>) &#123;<br>         <span class="hljs-comment">// 0 lists -&gt; 1 list</span><br>         list = addedLists[<span class="hljs-number">0</span>];<br>     &#125; <br>     <span class="hljs-keyword">else</span> &#123;<br>         <span class="hljs-comment">// 1 list -&gt; many lists</span><br>         List* oldList = list;<br>         uint32_t oldCount = oldList ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;<br>         uint32_t newCount = oldCount + addedCount;<br>         setArray((array_t *)malloc(array_t::byteSize(newCount)));<br>         array()-&gt;count = newCount;<br>         <span class="hljs-keyword">if</span> (oldList) array()-&gt;lists[addedCount] = oldList;<br>         memcpy(array()-&gt;lists, addedLists, <br>               addedCount * <span class="hljs-keyword">sizeof</span>(array()-&gt;lists[<span class="hljs-number">0</span>]));<br>     &#125;<br> &#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-Category中load和initialize的区别"><a href="#3-Category中load和initialize的区别" class="headerlink" title="3. Category中load和initialize的区别"></a>3. Category中load和initialize的区别</h4><ol>
+<li><p>+load</p>
+<p>调用时机：</p>
+<p><code>+load</code> 方法会在<code>runtime</code>加载类、分类时调用，每个程序的类、分类的<code>+load</code>，在程序运行过程中只会调用一次</p>
+<p>调用顺序：</p>
+<ul>
+<li><p>先调用类的<code>+load</code>方法</p>
+<p>按照编译顺序先编译先调用</p>
+<p>调用子类的<code>+load</code>方法之前会先调用父类的<code>+load</code>方法</p>
+</li>
+<li><p>再调用分类的<code>+load</code>方法</p>
+<p>按照编译先后顺序代用</p>
+</li>
+</ul>
+</li>
+<li><p>+initialize</p>
+<p>调用时机：</p>
+<ul>
+<li><code>+initialize</code>方法会在类第一次接收消息时调用</li>
+</ul>
+<p>调用顺序：</p>
+<ul>
+<li>先调用父类的<code>+initialize</code>再调用子类的<code>+initialize</code>（先初始化父类，再初始化子类，每个类只会初始化一次）</li>
+<li>分类的<code>+initialize</code>会覆盖类的<code>+initialize</code></li>
+</ul>
+</li>
+<li><p>+initialize与load的区别：</p>
+<p><code>+initialize</code>方法时通过<code>objc_msgSend</code>进行调用的，<code>+load</code>是找到<code>+load</code>方法内存地址直接调用的，所以<code>+initialize</code>方法有以下特点：</p>
+<ul>
+<li>如果子类没有实现<code>+initialize</code>，会调用父类的<code>+initialize</code>（所以父类的<code>+initialize</code>方法可能会被调用多次）</li>
+<li>如果分类实现了<code>+initialize</code>，就会覆盖本身的<code>+initialize</code>调用</li>
+</ul>
+</li>
+</ol>
+<h4 id="4-为分类添加成员变量"><a href="#4-为分类添加成员变量" class="headerlink" title="4. 为分类添加成员变量"></a>4. 为分类添加成员变量</h4><ul>
+<li><p>使用关联对象的方法间接添加成员变量:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &quot;Person+test.h&quot;<br>#import &lt;objc/runtime.h&gt;<br><br>@implementation Person (test)<br><br>-(void)setName:(NSString *)name&#123;<br>    /**<br>     object: 需要关联的对象<br>     key: const void * 类型的key(常见写法：1.使用属性名作为key 2. 使用get方法的@selector作为key)<br>     value：关联值<br>     objc_AssociationPolicy:关联策略<br>     */<br>    objc_setAssociatedObject(self, @selector(name), name, OBJC_ASSOCIATION_COPY_NONATOMIC);<br>&#125;<br><br>-(NSString*)name&#123;<br>    return  objc_getAssociatedObject(self, _cmd);<br>&#125;<br><br>@end<br>  <br>// 移除name<br>objc_setAssociatedObject(self, @selector(name), nil, OBJC_ASSOCIATION_COPY_NONATOMIC);<br>// 移除self的所有关联对象<br>objc_removeAssociatedObjects(self)<br></code></pre></td></tr></table></figure></li>
+<li><p>关联对象的原理：</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202231652896.png" srcset="/img/loading.gif" lazyload alt="关联对象的原理" style="zoom:110%;margin-left:10px" /></li>
+</ul>
+<h3 id="二、Extension（类扩展）"><a href="#二、Extension（类扩展）" class="headerlink" title="二、Extension（类扩展）"></a>二、Extension（类扩展）</h3><h4 id="1-扩展的用途？"><a href="#1-扩展的用途？" class="headerlink" title="1. 扩展的用途？"></a>1. 扩展的用途？</h4><ul>
+<li>声明私有属性</li>
+<li>声明私有成员变量</li>
+<li>声明私有方法</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">@interface ViewController ()<br>&#123;<br>    NSString *name;<br>&#125;<br>@property(nonatomic,assign)NSInteger age;<br>-(void)test;<br><br>@end<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-category和extension的区别是什么？"><a href="#2-category和extension的区别是什么？" class="headerlink" title="2. category和extension的区别是什么？"></a>2. category和extension的区别是什么？</h4><ul>
+<li>category是运行时决议，extension是编译是决议</li>
+<li>category有声明和实现，extension只以声明的形式，实现多数情况下寄生于宿主类的.m中</li>
+<li>category可以为系统类添加分类，extension不能为系统类添加扩展</li>
+</ul>
+<h3 id="面试题"><a href="#面试题" class="headerlink" title="面试题"></a>面试题</h3><ol>
+<li>Category的实现原理，以及Category为什么只能加方法，不能加属性</li>
+<li>Category中有load方法么？load方法时什么时候调用的？load方法能继承吗？</li>
+<li>load、initialize在category中的调用顺序，以及出现继承时它们之间的调用过程？ </li>
+<li>load、initialize的区别，以及它们在category重写的时候的调用次序？</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/iOS/">iOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">iOS_消息传递方式</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/18/iOS/%E5%A4%87%E8%80%83/UI%E8%A7%86%E5%9B%BE/iOS_%E5%9B%BE%E5%83%8F%E6%98%BE%E7%A4%BA%E5%8E%9F%E7%90%86/">
+                        <span class="hidden-mobile">iOS_图像显示原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"391336e02715065926b8","clientSecret":"daef7899351589e3c4f4abec997213f787648d4f","repo":"GHTYQ.github.io","owner":"GHTYQ","admin":["GHTYQ"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '0d57c7f07b061eb76b5a455e6a652380'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

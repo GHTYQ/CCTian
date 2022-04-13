@@ -1,0 +1,613 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="一、OC对象的本质我们平时编写的Object-C代码，底层实现其实都是基于C&#x2F;C++代码，所以Object-C的面向对象都是基于C&#x2F;C++的数据结构实现的。那它到底是基于什么数据结构实现的呢？ 我们知道，OC中所有对象基本上都是继承自NSObject的，所以可以通过窥探NSObject的底层实现，确定OC对象的本质。 我们在xcode中通过commad点击进入NSObject中可以看到NSObje">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_OC对象的本质">
+<meta property="og:url" content="https://ghtyq.github.io/2022/02/23/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_OC%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%9C%AC%E8%B4%A8/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="一、OC对象的本质我们平时编写的Object-C代码，底层实现其实都是基于C&#x2F;C++代码，所以Object-C的面向对象都是基于C&#x2F;C++的数据结构实现的。那它到底是基于什么数据结构实现的呢？ 我们知道，OC中所有对象基本上都是继承自NSObject的，所以可以通过窥探NSObject的底层实现，确定OC对象的本质。 我们在xcode中通过commad点击进入NSObject中可以看到NSObje">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203011714702.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203011733312.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203011720602.png">
+<meta property="article:published_time" content="2022-02-23T15:34:07.000Z">
+<meta property="article:modified_time" content="2022-04-13T03:36:42.966Z">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="备考">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203011714702.png">
+  
+  <title>iOS_OC对象的本质 - TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="iOS_OC对象的本质">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-02-23 15:34" pubdate>
+        2022年2月23日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">iOS_OC对象的本质</h1>
+            
+            <div class="markdown-body">
+              <h3 id="一、OC对象的本质"><a href="#一、OC对象的本质" class="headerlink" title="一、OC对象的本质"></a>一、OC对象的本质</h3><p>我们平时编写的Object-C代码，底层实现其实都是基于C/C++代码，所以Object-C的面向对象都是基于C/C++的数据结构实现的。那它到底是基于什么数据结构实现的呢？</p>
+<p>我们知道，OC中所有对象基本上都是继承自NSObject的，所以可以通过窥探NSObject的底层实现，确定OC对象的本质。</p>
+<p>我们在xcode中通过commad点击进入NSObject中可以看到NSObject头文件中对其的定义</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// NSObject 的定义<br>@interface NSObject &lt;NSObject&gt; &#123;<br>#pragma clang diagnostic push<br>#pragma clang diagnostic ignored &quot;-Wobjc-interface-ivars&quot;<br>    Class isa  OBJC_ISA_AVAILABILITY;<br>#pragma clang diagnostic pop<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>通过<code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc OC源文件 -o 输出的CPP文件</code>将OC代码转化为C/C++代码，窥探NSObject的底层实现，可以发现NSObject对象在C/C++中就是一个结构体。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">NSObject_IMPL</span> &#123;</span><br>	Class isa;<br>&#125;;<br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">objc_class</span> *<span class="hljs-title">Class</span>;</span><br></code></pre></td></tr></table></figure>
+
+<p>所以可以说OC对象的本质是在C/C++内存中的结构体。</p>
+<h3 id="二、OC对象的分类"><a href="#二、OC对象的分类" class="headerlink" title="二、OC对象的分类"></a>二、OC对象的分类</h3><p>OC对象主要分为三类：</p>
+<ol>
+<li><p>instance对象</p>
+<p>instance对象就是通过alloc出来的对象，每次调用alloc都会产生一个新的instance对象，它们占用着不同的内存地址。</p>
+<p>instance对象在内存中主要存储的信息包括：</p>
+<ul>
+<li><p>isa指针</p>
+</li>
+<li><p>其他成员变量（成员变量实际的值）</p>
+</li>
+</ul>
+</li>
+<li><p>class对象</p>
+<p>calss对象的获取方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &lt;objc/runtime.h&gt;<br>NSObject *obj = [[NSObject alloc]init];<br>// 获取class对象的方法<br>//1.<br>Class objClass1 = [obj class];<br>//2.<br>Class objClass2 = [NSObject class];<br>//3.runtime方法<br>Class objClass3 = object_getClass(obj);<br></code></pre></td></tr></table></figure>
+
+<p>class对象在内存中存储的信息：</p>
+<ul>
+<li>isa指针</li>
+<li>superclass指针</li>
+<li>类的属性信息（@property）、类的对象方法信息（-(void)）</li>
+<li>类的协议信息（protocol）、类的成员变量信息（ivar）(成员变量的名称、类型)</li>
+</ul>
+</li>
+<li><p>meta-class对象</p>
+<p>meta-class 获取方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &lt;objc/runtime.h&gt;<br><br>Class objcMetaClass = object_getClass([NSObject class]);<br></code></pre></td></tr></table></figure>
+
+<p>每个类在内存中有且只有一个meta-class对象</p>
+<p>meta-class对象和class对象的内存结构是一样的，只是meta-class对象内存中存储的信息是：</p>
+<ul>
+<li>isa指针</li>
+<li>superclass指针</li>
+<li>类的类方法信息（+(void)）</li>
+</ul>
+<p>查看Class对象是否为原类对象：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &lt;objc/runtime.h&gt;<br><br>BOOL result = class_isMetaClass([NSObject class]);<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="三、isa指针"><a href="#三、isa指针" class="headerlink" title="三、isa指针"></a>三、isa指针</h3><p>这里用一张图解释isa指针的作用：</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203011714702.png" srcset="/img/loading.gif" lazyload alt="isa指针" style="zoom:100%;margin-left:10px" />
+
+<h4 id="1-isa的本质"><a href="#1-isa的本质" class="headerlink" title="1. isa的本质"></a>1. isa的本质</h4><p>在64bit中：</p>
+<p>instance对象isa指针指向的内存地址&amp;ISA_MASK=class对象的内存地址</p>
+<p>class对象isa指针指向的内存地址&amp;ISA_MASK=meta-class对象的内存地址</p>
+<p>补充：</p>
+<p>class、meta-class对象的本质结构都是struct objc_class，其内部结构如图：  </p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203011733312.png" srcset="/img/loading.gif" lazyload alt="struct objc_class的结构" style="zoom:97%;margin-left:10px" />
+
+<h4 id="2-isa、superclass总结"><a href="#2-isa、superclass总结" class="headerlink" title="2. isa、superclass总结"></a>2. isa、superclass总结</h4><img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203011720602.png" srcset="/img/loading.gif" lazyload alt="image-20220301172044495" style="zoom:70%;margin-left:10px" />
+
+<h5 id="2-1-isa"><a href="#2-1-isa" class="headerlink" title="2.1. isa"></a>2.1. isa</h5><ul>
+<li>instance的isa指向class</li>
+<li>calss的isa指向meta-calss</li>
+<li>meta-calss的isa指针指向基类的meta-class</li>
+</ul>
+<h5 id="2-2-superclass"><a href="#2-2-superclass" class="headerlink" title="2.2. superclass"></a>2.2. superclass</h5><ul>
+<li>class的superclass指向父类的class，如果没有父类，superclass指向nil</li>
+<li>meta-class的superclass指向父类的meta-class，基类的meta-class的spuerclass指向基类的class</li>
+</ul>
+<h5 id="2-3-方法调用轨迹"><a href="#2-3-方法调用轨迹" class="headerlink" title="2.3. 方法调用轨迹"></a>2.3. 方法调用轨迹</h5><ul>
+<li><p>instance调用对象方法的轨迹</p>
+<p>isa找到class，方法不存在，就通过superclass找父类</p>
+</li>
+<li><p>class调用类方法的轨迹</p>
+<p>isa找到meta-class，方法不存在，通过superclass找父类</p>
+</li>
+</ul>
+<h3 id="四、面试题："><a href="#四、面试题：" class="headerlink" title="四、面试题："></a>四、面试题：</h3><ol>
+<li><p>一个NSObject对象占多少内存？</p>
+<p>我们可以通过以下两个方法进行计算：</p>
+<ul>
+<li><p>创建一个实例对象，至少需要多少内存？</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#import <span class="hljs-meta-string">&lt;objc/runtime.h&gt;</span></span><br><span class="hljs-built_in">class_getInstanceSize</span>([NSObject class])<br></code></pre></td></tr></table></figure></li>
+<li><p>创建一个实例对象，实际分配的内存？</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#import <span class="hljs-meta-string">&lt;malloc/malloc.h&gt;</span></span><br><span class="hljs-built_in">malloc_size</span>((__bridge <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *)obj)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<p>可以得出系统分配了16个字节给NSObject对象，但是NSObject对象内部只使用了8个字节的空间（64bit环境下）  </p>
+</li>
+<li><p>对象的isa指针指向哪里？</p>
+<ul>
+<li>instance的isa指针指向clas对象</li>
+<li>calss对象的isa指针指向meta-calss对象</li>
+<li>meta-class的isa指向基类的meta-calss对象</li>
+</ul>
+</li>
+<li><p>OC类信息存放在哪里？</p>
+<ul>
+<li>对象方法、属性、成员变量、协议信息存放在类对象中</li>
+<li>类方法存放在meta-class对象中</li>
+<li>成员变量的具体值存放在instance对象中</li>
+</ul>
+</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/iOS/">iOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/01/iOS/%E5%A4%87%E8%80%83/Runtime&amp;Runloop/iOS_Runtime/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">iOS_Runtime</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E5%B1%9E%E6%80%A7%E5%85%B3%E9%94%AE%E5%AD%97/">
+                        <span class="hidden-mobile">iOS_属性关键字</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"391336e02715065926b8","clientSecret":"daef7899351589e3c4f4abec997213f787648d4f","repo":"GHTYQ.github.io","owner":"GHTYQ","admin":["GHTYQ"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '033e01f675c9272e9957656b3018f6a1'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

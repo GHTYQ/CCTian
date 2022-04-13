@@ -1,0 +1,613 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="一. KVC1. 什么是KVC?键值编码（KVC）是一种在NSKeyValueCoding非正式协议下使用字符串标志间接访问对象属性的一种机制。  注意：KVC可以暴力访问对象的任何变量，无论是否是private私有类型的变量、  2. KVC的使用场景有哪些？在iOS开发中，允许开发者通过key名间接的访问对象的属性，或者直接给对象的属性赋值，而不需要调用对象的存取方法。这样就可以在运行时动态的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_KVO与KVC">
+<meta property="og:url" content="https://ghtyq.github.io/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-KVO%E4%B8%8EKVC/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="一. KVC1. 什么是KVC?键值编码（KVC）是一种在NSKeyValueCoding非正式协议下使用字符串标志间接访问对象属性的一种机制。  注意：KVC可以暴力访问对象的任何变量，无论是否是private私有类型的变量、  2. KVC的使用场景有哪些？在iOS开发中，允许开发者通过key名间接的访问对象的属性，或者直接给对象的属性赋值，而不需要调用对象的存取方法。这样就可以在运行时动态的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202161737178.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202151622862.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202151622219.png">
+<meta property="article:published_time" content="2022-01-19T15:34:50.000Z">
+<meta property="article:modified_time" content="2022-04-13T03:36:42.966Z">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="备考">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202161737178.png">
+  
+  <title>iOS_KVO与KVC - TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="iOS_KVO与KVC">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-19 15:34" pubdate>
+        2022年1月19日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">iOS_KVO与KVC</h1>
+            
+            <div class="markdown-body">
+              <h3 id="一-KVC"><a href="#一-KVC" class="headerlink" title="一. KVC"></a>一. KVC</h3><h4 id="1-什么是KVC"><a href="#1-什么是KVC" class="headerlink" title="1. 什么是KVC?"></a>1. 什么是KVC?</h4><p>键值编码（KVC）是一种在NSKeyValueCoding非正式协议下使用字符串标志间接访问对象属性的一种机制。</p>
+<blockquote>
+<p>注意：KVC可以暴力访问对象的任何变量，无论是否是private私有类型的变量、</p>
+</blockquote>
+<h4 id="2-KVC的使用场景有哪些？"><a href="#2-KVC的使用场景有哪些？" class="headerlink" title="2. KVC的使用场景有哪些？"></a>2. KVC的使用场景有哪些？</h4><p>在iOS开发中，允许开发者通过key名间接的访问对象的属性，或者直接给对象的属性赋值，而不需要调用对象的存取方法。这样就可以在运行时动态的访问和修改对象的属性值。</p>
+<p>在OC中，NSObject类及其子类默认都实现NSKeyValueCoding协议，这个协议定义了所有实现KVC的方法。下面列举KVC中最为重要的4个方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 直接通过key来取值<br>- (nullable id )valueForKey:(NSString*)key；<br>// 通过key来设值<br>-（void）setValue:(nullable id)value forKey:(NSString*)key;<br>// 通过keyPath来取值<br>- (nullable id )valueForKeyPath:(NSString*)keyPath;<br>// 通过keyPath来设值<br>-（void）setValue:(nullable id)value forKeyPath:(NSString*)keyPath;<br></code></pre></td></tr></table></figure>
+
+<p>KVC的一般应用场景：</p>
+<ol>
+<li><p>动态的取值和设值</p>
+<p>KVC最常用的也是最基础的用途</p>
+</li>
+<li><p>利用KVC来访问、修改对象的私有属性</p>
+<p>对于类中的私有属性，无法通过普通的设置和取值方法直接访问，但是KVC是可以的，如iOS13之前UITextField中的修改占位符字体颜色</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">[textField setValue:[UIColor redColor] forKeyPath:@&quot;_placeholderLabel.textColor&quot;];<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>键路径：就是键值编码中某个属性的key，一个由连续键名组成的字符串，键名即属性名，键名之间用点隔开，用于指定一个链接在一起的对象性质序列。</p>
+</blockquote>
+</li>
+<li><p>利用KVC进行model和字典之间的转换</p>
+<p>使用KVC提供的<code>setValuesForKeysWithDictionary:</code>，可以将字典映射到一个对象，不需要一一的为对象赋值而直接从字典中初始化即可。</p>
+</li>
+<li><p>利用KVC实现高阶消息传递</p>
+<p>当对容器类（如NSArray类）使用KVC时，<code>valueForKey：</code>将会被传递给容器中的每一个对象，而不是对容器本身进行操作。相应的结果会被添加进返回的容器中，这样可以很方便地操作集合来返回另一个集合。示例代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">NSArray *array = @[@&quot;tom&quot;,@&quot;jim&quot;,@&quot;taylor&quot;];<br>NSArray *result = [array valueForKey:@&quot;capitalizedString&quot;];<br>NSLog(@&quot;%@&quot;,result);<br><br>// 输出<br>22-02-15 17:43:41.470604+0800 KVC[14923:610897] (<br>    Tom,<br>    Jim,<br>    Taylor<br>)<br><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="3-setValue：ForKey：方法的底层实现是什么？"><a href="#3-setValue：ForKey：方法的底层实现是什么？" class="headerlink" title="3. setValue：ForKey：方法的底层实现是什么？"></a>3. setValue：ForKey：方法的底层实现是什么？</h4><p>当一个对象发送<code>setValue:forKey：</code>消息时，方法内部会做以下操作：</p>
+<ol>
+<li>查找类中是否存在 <code>setKey:</code> 或者<code>_setKey:</code>,如果找到，传递参数，调用方法</li>
+<li>没有找到 <code>setKey:</code> 或者<code>_setKey:</code>方法，查看<code>accessInstanceVariablesDirectly</code>方法的返回值，如果返回为<code>NO</code>，调用<code>setValue:forUndefinedKey:</code>并抛出异常<code>NSUnkonownKeyException</code>。</li>
+<li>如果<code>accessInstanceVariablesDirectly</code>返回为<code>YES</code>,按照 <code>_key</code>、<code>_isKey</code>、<code>key</code>、<code>isKey</code>的顺序查找成员变量，如果查找到成员变量，则直接赋值，如果没有查找到则调用<code>setValue:forUndefinedKey:</code>并抛出异常<code>NSUnkonownKeyException</code>。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202161737178.png" srcset="/img/loading.gif" lazyload alt="setValue:forKey:实现原理"></p>
+<blockquote>
+<p>accessInstanceVariablesDirectly：这个方法默认的返回值就是YES</p>
+</blockquote>
+<h4 id="4-valueForKey-的原理？"><a href="#4-valueForKey-的原理？" class="headerlink" title="4.valueForKey:的原理？"></a>4.valueForKey:的原理？</h4><p>  取值的原理与赋值类似，只是在第一步是按照<code>getKey：</code>、<code>key：</code>、<code>isKey：</code>、<code>_key：</code>的顺序查找，后面的过程跟赋值过程唯一不同是一个赋值一个取值。 </p>
+<h4 id="5-问题？"><a href="#5-问题？" class="headerlink" title="5.问题？"></a>5.问题？</h4><ol>
+<li><p>通过KVC修改属性值是否会触发KVO?</p>
+<p>可以，即使是直接为成员变量赋值，也是会触发KVO，因为KVC调用setValue:forKey:方法的时候会调用下面两个方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">[self willChangeValueForKey:@&quot;key&quot;];<br>[self didChangeValueForKey:@&quot;key&quot;]；<br></code></pre></td></tr></table></figure></li>
+<li><p>setValueforKey:和setObjectForKey:的区别</p>
+<ul>
+<li><code>setObjectForKey:</code>是<code>NSMutableDictionary</code>类特有的，只有<code>NSMutableDdictionary</code>类及其子类的实例化对象能够使用，而<code>setValue:forKey:</code>方法是KVC的主要方法，只要遵循NSCoding协议的对象都能够使用。</li>
+<li><code>setValue:forKey:</code>中的key的参数只能够是NSString类型，而<code>setObject:forKey:</code>的key可以是任何类型的对象类型。</li>
+<li><code>setObject:forKey:</code>方法中参数value不能为nil，否则会抛出异常。而<code>setValue:forKey:</code>中value可以为nil，只是当value为nil的时候会自动调用<code>removeObject:forKey:</code>方法</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:@&#123;@&quot;age&quot;:@&quot;10&quot;&#125;];<br>[dict setObject:@&quot;11&quot; forKey:@&quot;age&quot;];<br>NSLog(@&quot;%@&quot;,dict);<br>[dict setValue:@&quot;12&quot; forKey:@&quot;age&quot;];<br>NSLog(@&quot;%@&quot;,dict);<br>[dict setValue:nil forKey:@&quot;age&quot;];<br>NSLog(@&quot;%@&quot;,dict);<br>[dict setObject:nil forKey:@&quot;age&quot;]; // 警告⚠️ Null passed to a callee that requires a non-null argument<br>// 输出结果<br>2022-02-17 11:37:45.451375+0800 KVC[25119:1226604] &#123;<br>    age = 11;<br>&#125;<br>2022-02-17 11:37:45.451569+0800 KVC[25119:1226604] &#123;<br>    age = 12;<br>&#125;<br>2022-02-17 11:37:45.451698+0800 KVC[25119:1226604] &#123;<br>&#125;<br>2022-02-17 11:38:50.827182+0800 KVC[25144:1228282] *** Terminating app due to uncaught exception &#x27;NSInvalidArgumentException&#x27;, reason: &#x27;*** -[__NSDictionaryM setObject:forKey:]: object cannot be nil (key: age)&#x27;<br><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：当对字典赋值的时候需要先对赋值的value做判空处理，防止crash</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="二-KVO"><a href="#二-KVO" class="headerlink" title="二. KVO"></a>二. KVO</h3><h4 id="1-KVO的定义"><a href="#1-KVO的定义" class="headerlink" title="1. KVO的定义"></a>1. KVO的定义</h4><p>键值观察（<code>KVO</code>）是key-value observing的缩写，是基于键值编码实现的一种观察者机制，提供了观察某一属性变化的监听方法。</p>
+<p>apple使用isa混写（isa-swizzling）来实现KVO</p>
+<p>Isa 混写技术的标志：系统会在运行时动态创建NSKVONotifying_A </p>
+<blockquote>
+<p>isa是什么？</p>
+</blockquote>
+<h4 id="2-KVO的简单使用"><a href="#2-KVO的简单使用" class="headerlink" title="2. KVO的简单使用"></a>2. KVO的简单使用</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-comment">// KVO是OC语言特性，这里需要继承自NSObject</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span>: <span class="hljs-title">NSObject</span> </span>&#123;<br>    <span class="hljs-keyword">@objc</span> <span class="hljs-keyword">dynamic</span> <span class="hljs-keyword">var</span> age <span class="hljs-operator">=</span> <span class="hljs-number">0</span><br>&#125;<br><br><br><span class="hljs-keyword">import</span> UIKit<br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ViewController</span>: <span class="hljs-title">UIViewController</span> </span>&#123;<br>    <span class="hljs-keyword">let</span> p <span class="hljs-operator">=</span> <span class="hljs-type">Person</span>()<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">viewDidLoad</span>()</span> &#123;<br>        <span class="hljs-keyword">super</span>.viewDidLoad()<br>      	<span class="hljs-comment">// 注册成为观察者</span><br>        p.addObserver(<span class="hljs-keyword">self</span>, forKeyPath: <span class="hljs-string">&quot;age&quot;</span>, options: .new, context: <span class="hljs-literal">nil</span>)<br>    &#125;<br>    <br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">touchesBegan</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">touches</span>: <span class="hljs-type">Set</span>&lt;<span class="hljs-type">UITouch</span>&gt;, <span class="hljs-params">with</span> <span class="hljs-params">event</span>: <span class="hljs-type">UIEvent</span>?)</span> &#123;<br>      	<span class="hljs-comment">// 设置需要被观察对象的属性</span><br>        p.age <span class="hljs-operator">=</span> <span class="hljs-number">2</span><br>    &#125;<br>    <br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">observeValue</span>(<span class="hljs-params">forKeyPath</span> <span class="hljs-params">keyPath</span>: <span class="hljs-type">String</span>?, <span class="hljs-params">of</span> <span class="hljs-params">object</span>: <span class="hljs-keyword">Any</span><span class="hljs-operator">?</span>, <span class="hljs-params">change</span>: [<span class="hljs-params">NSKeyValueChangeKey</span> : <span class="hljs-keyword">Any</span>]<span class="hljs-operator">?</span>, <span class="hljs-params">context</span>: <span class="hljs-type">UnsafeMutableRawPointer</span>?)</span> &#123;<br>      	<span class="hljs-comment">// 在回调方法中处理变更通知</span><br>        <span class="hljs-built_in">print</span>(change<span class="hljs-operator">!</span>)<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-如何使用KVO设置键值观察依赖键"><a href="#3-如何使用KVO设置键值观察依赖键" class="headerlink" title="3. 如何使用KVO设置键值观察依赖键"></a>3. 如何使用KVO设置键值观察依赖键</h4><p>很多情况下对象的属性之间是相互关联的，对象的一个属性值依赖于另一个对象的一个或多个属性，如果被依赖对象属性中的任意一个值发生改变，那么对象的属性的值也会相应发生改变。实例代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &lt;Foundation/Foundation.h&gt;<br><br>NS_ASSUME_NONNULL_BEGIN<br><br>@interface Person : NSObject<br>@property(nonatomic, copy) NSString *name;<br>@property(nonatomic, assign) NSInteger age;<br>@end<br><br>@interface Student : NSObject<br>@property(nonatomic, copy) NSString *infomation;<br>@property(nonatomic, strong) Person *p;<br>@end<br><br>NS_ASSUME_NONNULL_END<br></code></pre></td></tr></table></figure>
+
+<p>此时需要观察Student类实例中infomation属性值的变化，而information属性值依赖于Person属性的值，如何确定这种依赖关系呢？</p>
+<ol>
+<li><p>手动实现information的setter和getter方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">-(void)setInfomation:(NSString *)infomation<br>&#123;<br>    NSArray *array = [infomation componentsSeparatedByString:@&quot;#&quot;];<br>    [self.p setName:[array objectAtIndex:0]];<br>    [self.p setAge: [[array objectAtIndex:1] integerValue]];<br>&#125;<br><br>-(NSString *)infomation<br>&#123;<br>    return [NSString stringWithFormat:@&quot;%@#%ld&quot;,self.p.name,self.p.age];<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>实现<code>+ (NSSet&lt;NSString *&gt; *)keyPathsForValuesAffectingValueForKey:(NSString *)key</code>方法</p>
+<p>这个方法告诉系统infomation属性依赖于其它哪些属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">+(NSSet&lt;NSString *&gt; *)keyPathsForValuesAffectingValueForKey:(NSString *)key<br>&#123;<br>    if ([key isEqualToString:@&quot;infomation&quot;]) &#123;<br>        return [NSSet setWithObjects:@&quot;p.name&quot;,@&quot;p.age&quot;, nil];<br>    &#125;<br>    return  nil;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>控制器中添加观察者和实现KVO回调</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">-(void)viewDidLoad<br>&#123;<br>   self.stu = [[Student alloc] init];<br>    Person *p = [[Person alloc] init];<br>    self.stu.p = p;<br>    <br>    self.stu.infomation = @&quot;a#1&quot;;<br>    NSLog(@&quot;%@&quot;,self.stu.infomation);<br>    [self.stu addObserver:self forKeyPath:@&quot;infomation&quot; options:NSKeyValueObservingOptionNew |   NSKeyValueObservingOptionOld context:nil];<br>&#125;<br><br>-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary&lt;NSKeyValueChangeKey,id&gt; *)change context:(void *)context<br>&#123;<br>    if ([keyPath isEqualToString:@&quot;infomation&quot;]) &#123;<br>        NSLog(@&quot;%@&quot;,self.stu.infomation);<br>    &#125;<br>&#125;<br><br>-(void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event<br>&#123;<br>    self.stu.p.name = @&quot;abc&quot;;<br>    self.stu.p.age = 2;<br>&#125;<br>//  log <br>a#1<br>abc#1<br>abc#2<br></code></pre></td></tr></table></figure>
+
+<p>当分别设置Person的name和age属性时，infomation的值都会发生变化，所以会打印两次infomation的信息。</p>
+</li>
+</ol>
+<h4 id="4-KVO的本质"><a href="#4-KVO的本质" class="headerlink" title="4. KVO的本质"></a>4. KVO的本质</h4><ul>
+<li><p>未使用KVO监听的对象</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202151622862.png" srcset="/img/loading.gif" lazyload alt="未使用KVO监听的对象" style="zoom:50%;margin-left:10px" /></li>
+<li><p>使用KVO监听的对象</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202151622219.png" srcset="/img/loading.gif" lazyload alt="使用KVO监听的对象" style="zoom:50%;margin-left:10px" /></li>
+</ul>
+<p>通过上面两幅图片我们可以看出，当某个类(<code>Person</code>)的对象第一次被观察时，系统会在运行时动态的创建对应于该类的一个派生类（如：<code>NSKVONotifying_DelegateDemo.Person</code>），在这个派生类中，系统会重写父类中被观察属性的<code>setter</code>方法。在重写的setter方法中实现真正的通知机制，类似下面的伪代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// _NSSetIntValueAndNotify方法的伪代码实现<br>-(void)setAge:(int)age&#123;<br>  //`NSKVONotifying_DelegateDemo.Person`类重写了`setAge`方法的实现，它会调用`Foundation`框架中的`_NSSetxxxValueAndNotify`方法<br>  _NSSetIntValueAndNotify()<br>&#125;<br><br>-(void)_NSSetIntValueAndNotify&#123;<br>  [self willChangeValueForKey:@&quot;age&quot;];<br>  [super setAge:age];<br>  [self didChangeValueForKey:@&quot;age&quot;]；<br>&#125;<br><br>-(void)didChangeValueForKey:(NSString*)key&#123;<br>  // 通知监听器，某属性发生了改变<br>  [oberser oberserValueForKeyPath:key ofObject:self change:nil context:nil];<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>要通过<code>KVO</code>来实现观察者模式，必须遵循<code>KVO</code>的属性设置方式（<code>KVC</code>或者<code>setter</code>方法）来改变属性值，如果仅是直接修改属性对应的成员变量，那么是无法实现<code>KVO</code>的。</p>
+<p>当系统在运行时创建派生类的同时，派生类还重写了<code>class</code>的方法，让开发者以为正在调用的类还是原始类。然后系统会将这个对象的isa指针指向新创建的派生类，因此这个对象就成了该派生类的对象，因而当开发者调用属性的setter方法时，实际上是调用重写后的<code>setter</code>方法，从而实现了键值通知的机制。此外，派生类还重写了<code>dealloc</code>方法来释放内存资源。</p>
+<h4 id="5-问题"><a href="#5-问题" class="headerlink" title="5. 问题"></a>5. 问题</h4><ol>
+<li><p>在什么情况下会触发KVO?</p>
+<p>KVC或者调用了<code>setter</code>方法</p>
+</li>
+<li><p>如何手动触发KVO</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 以上面的age属性为例, 手动触发KVO<br>// 在需要触发KVO的地方滴啊用<br>[self willChangeValueForKey:@&quot;age&quot;];<br>[self didChangeValueForKey:@&quot;age&quot;]；<br><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="">iOS程序员面试笔试宝典</a></li>
+<li><a href="">小马哥视频</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/iOS/">iOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E5%B1%9E%E6%80%A7%E5%85%B3%E9%94%AE%E5%AD%97/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">iOS_属性关键字</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F/">
+                        <span class="hidden-mobile">iOS_消息传递方式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"391336e02715065926b8","clientSecret":"daef7899351589e3c4f4abec997213f787648d4f","repo":"GHTYQ.github.io","owner":"GHTYQ","admin":["GHTYQ"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'a9608539872e114de30f933b01e73412'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

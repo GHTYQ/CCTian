@@ -1,0 +1,987 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="好记性不如烂笔头！">
+<meta property="og:type" content="website">
+<meta property="og:title" content="TaylorTian Blog">
+<meta property="og:url" content="https://ghtyq.github.io/page/2/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="好记性不如烂笔头！">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="iOS,OC,Swift">
+<meta name="twitter:card" content="summary_large_image">
+  
+  <title>TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background8.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="TaylorTian Blog">
+              
+            </span>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div class="py-5" id="board"
+          style=margin-top:0>
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/03/08/iOS/%E5%A4%87%E8%80%83/Runtime&amp;Runloop/iOS_Runloop/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_RunLoop">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/03/08/iOS/%E5%A4%87%E8%80%83/Runtime&amp;Runloop/iOS_Runloop/" target="_self">
+          iOS_RunLoop
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/03/08/iOS/%E5%A4%87%E8%80%83/Runtime&amp;Runloop/iOS_Runloop/" target="_self">
+          
+          
+            
+          
+          一、什么是RunLoop顾名思义运行循环，在程序运行中循环做一些事情
+应用范畴：
+
+定时器（Timer）、PerformSelector
+GCD  Async Main Queue
+事件响应、手势识别、界面刷新
+网络请求
+AutoreleasePool
+
+RunLoop的基本作用：
+
+保持程序的持续运行（没有runloop程序会马上退出）
+处理App中的各种事件（比如触摸事件、定时器事件）
+节省C
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-03-08 15:34" pubdate>
+              2022-03-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/03/02/%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="位运算">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/03/02/%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
+          位运算
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/03/02/%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
+          
+          
+            
+          
+          所谓的位运算就是对一个比特（bit）位进行操作。bit是一个电子元器件，8个bit构成一个字节（Byte），它是粒度最小的可操作单元。
+C和OC中常见类型及它们所占字节数：
+
+
+
+C语言类型
+所占字节(bit)
+OC语言类型
+所占字节(bit)
+
+
+
+int
+4
+NSInter
+8
+
+
+float
+4
+CGFloat
+8
+
+
+double
+8
+double
+8
+
+
+char
+1
+NSString
+
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-03-02 15:34" pubdate>
+              2022-03-02
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/03/01/iOS/%E5%A4%87%E8%80%83/Runtime&amp;Runloop/iOS_Runtime/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_Runtime">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/03/01/iOS/%E5%A4%87%E8%80%83/Runtime&amp;Runloop/iOS_Runtime/" target="_self">
+          iOS_Runtime
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/03/01/iOS/%E5%A4%87%E8%80%83/Runtime&amp;Runloop/iOS_Runtime/" target="_self">
+          
+          
+            
+          
+          一、概念介绍在学习 runtime之前，首先要了解它的底层的一些常用的数据结构，比如isa指针
+
+在arm64架构之前，isa就是一个普通的指针，存储着class、meta-class对象的内存地址
+在arm64架构之后，对isa进行了优化，变成了一个共同体（union）结构，还使用位域来存储更多的信息
+
+1. 共同体我们知道结构体（Struct）是一种构造类型或复杂类型，它可以包含多个类型不同的
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-03-01 15:34" pubdate>
+              2022-03-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/02/23/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_OC%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%9C%AC%E8%B4%A8/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_OC对象的本质">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/23/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_OC%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%9C%AC%E8%B4%A8/" target="_self">
+          iOS_OC对象的本质
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/23/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_OC%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%9C%AC%E8%B4%A8/" target="_self">
+          
+          
+            
+          
+          一、OC对象的本质我们平时编写的Object-C代码，底层实现其实都是基于C/C++代码，所以Object-C的面向对象都是基于C/C++的数据结构实现的。那它到底是基于什么数据结构实现的呢？
+我们知道，OC中所有对象基本上都是继承自NSObject的，所以可以通过窥探NSObject的底层实现，确定OC对象的本质。
+我们在xcode中通过commad点击进入NSObject中可以看到NSObje
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-23 15:34" pubdate>
+              2022-02-23
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E5%B1%9E%E6%80%A7%E5%85%B3%E9%94%AE%E5%AD%97/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_属性关键字">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E5%B1%9E%E6%80%A7%E5%85%B3%E9%94%AE%E5%AD%97/" target="_self">
+          iOS_属性关键字
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E5%B1%9E%E6%80%A7%E5%85%B3%E9%94%AE%E5%AD%97/" target="_self">
+          
+          
+            
+          
+          一、属性和成员变量1、成员变量成员变量的声明：
+1234567@interface ViewController ()&#123;    NSString *name;// 成员变量  	UIButton *btn;//实例变量  	id userId;//实例变量&#125;@end
+
+实例变量：class类进行实例化出来的对象。id是一种特殊的class，是OC特有的对象。
+成员变量：{ }内
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-19 15:35" pubdate>
+              2022-01-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-KVO%E4%B8%8EKVC/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_KVO与KVC">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-KVO%E4%B8%8EKVC/" target="_self">
+          iOS_KVO与KVC
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-KVO%E4%B8%8EKVC/" target="_self">
+          
+          
+            
+          
+          一. KVC1. 什么是KVC?键值编码（KVC）是一种在NSKeyValueCoding非正式协议下使用字符串标志间接访问对象属性的一种机制。
+
+注意：KVC可以暴力访问对象的任何变量，无论是否是private私有类型的变量、
+
+2. KVC的使用场景有哪些？在iOS开发中，允许开发者通过key名间接的访问对象的属性，或者直接给对象的属性赋值，而不需要调用对象的存取方法。这样就可以在运行时动态的
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-19 15:34" pubdate>
+              2022-01-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_消息传递方式">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F/" target="_self">
+          iOS_消息传递方式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F/" target="_self">
+          
+          
+            
+          
+          前言我们通常都是用什么方式，实现iOS不同界面的消息传递呢？系统到底为我们提供了多少种方式呢？怀着这样的想法，在此对常用的消息传递的方式做了个简单的总结。
+一、代理1. 代理的定义？代理是一种软件设计模式，在iOS当中以@protocal形式体现，实现消息一对一的传递
+2. 代理的实现代理有三部分组成：
+
+协议
+定义属性和方法
+协议方法有两个修饰符@Required和@Optional，被@Req
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-19 15:34" pubdate>
+              2022-01-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-Category%E5%92%8CExtension/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_Category和Extension">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-Category%E5%92%8CExtension/" target="_self">
+          iOS_Category和Extension
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-Category%E5%92%8CExtension/" target="_self">
+          
+          
+            
+          
+          一. Category（分类）1. Category可以添加哪些内容？
+实例方法
+类方法
+协议
+属性（只有setter和getter方法的声明，没有实现，没有成员变量）
+
+2. Category实现原理Category的底层结构：
+12345678910111213141516struct category_t &#123;       const char *name;       classr
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-19 15:32" pubdate>
+              2022-01-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/01/18/iOS/%E5%A4%87%E8%80%83/UI%E8%A7%86%E5%9B%BE/iOS_%E5%9B%BE%E5%83%8F%E6%98%BE%E7%A4%BA%E5%8E%9F%E7%90%86/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_图像显示原理">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/18/iOS/%E5%A4%87%E8%80%83/UI%E8%A7%86%E5%9B%BE/iOS_%E5%9B%BE%E5%83%8F%E6%98%BE%E7%A4%BA%E5%8E%9F%E7%90%86/" target="_self">
+          iOS_图像显示原理
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/18/iOS/%E5%A4%87%E8%80%83/UI%E8%A7%86%E5%9B%BE/iOS_%E5%9B%BE%E5%83%8F%E6%98%BE%E7%A4%BA%E5%8E%9F%E7%90%86/" target="_self">
+          
+          
+            
+          
+          前言最近在看一些视频，觉得有必要把里面的内容记录下来方便之后复习。
+一、图像的显示原理 CPU和GPU两个硬件通过总线链接起来，CPU输出的结果(往往是一个位图(bitmap)经由总线传给GPU，GPU拿到位图之后，会对位图做相应的图层的渲染、纹理的合成等处理。之后会把结果放入帧缓冲区(Frame Buffer)当中。然后由视频控制器根据VSync信号在指定时间之前去提取对应帧缓冲区当中的屏幕显示
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-18 11:32" pubdate>
+              2022-01-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/01/17/iOS/%E5%A4%87%E8%80%83/UI%E8%A7%86%E5%9B%BE/iOS-frame%E5%92%8Cbounds%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
+          <img src="/img/AppStore.png" srcset="/img/loading.gif" lazyload alt="iOS_frame和bounds的区别">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/17/iOS/%E5%A4%87%E8%80%83/UI%E8%A7%86%E5%9B%BE/iOS-frame%E5%92%8Cbounds%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
+          iOS_frame和bounds的区别
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/17/iOS/%E5%A4%87%E8%80%83/UI%E8%A7%86%E5%9B%BE/iOS-frame%E5%92%8Cbounds%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
+          
+          
+            
+          
+          前言有时候不明白什么时候用frame合适什么时候用bounds合适，在这里记录下它们的区别。
+一、Frame控件在父控件中的位置和尺寸（以父控件的左上角为坐标原点）
+二、Bounds控件的位置和尺寸（以自己左上角为坐标原点的，所以bounds的x、y一般都为0）
+三、区别按照下面代码创建视图，我们可以看到图1当前视图坐标系，以及图2修改view视图bounds后，视图的坐标系以及对现有视图大小和尺
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-17 16:04" pubdate>
+              2022-01-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/iOS/">iOS</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

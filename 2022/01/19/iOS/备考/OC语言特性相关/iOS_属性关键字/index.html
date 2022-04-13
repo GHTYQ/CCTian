@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="一、属性和成员变量1、成员变量成员变量的声明： 1234567@interface ViewController ()&amp;#123;    NSString *name;&#x2F;&#x2F; 成员变量  	UIButton *btn;&#x2F;&#x2F;实例变量  	id userId;&#x2F;&#x2F;实例变量&amp;#125;@end  实例变量：class类进行实例化出来的对象。id是一种特殊的class，是OC特有的对象。 成员变量：{ }内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_属性关键字">
+<meta property="og:url" content="https://ghtyq.github.io/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E5%B1%9E%E6%80%A7%E5%85%B3%E9%94%AE%E5%AD%97/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="一、属性和成员变量1、成员变量成员变量的声明： 1234567@interface ViewController ()&amp;#123;    NSString *name;&#x2F;&#x2F; 成员变量  	UIButton *btn;&#x2F;&#x2F;实例变量  	id userId;&#x2F;&#x2F;实例变量&amp;#125;@end  实例变量：class类进行实例化出来的对象。id是一种特殊的class，是OC特有的对象。 成员变量：{ }内">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-19T15:35:14.000Z">
+<meta property="article:modified_time" content="2022-04-13T03:36:42.966Z">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="备考">
+<meta name="twitter:card" content="summary_large_image">
+  
+  <title>iOS_属性关键字 - TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="iOS_属性关键字">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-19 15:35" pubdate>
+        2022年1月19日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      4 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">iOS_属性关键字</h1>
+            
+            <div class="markdown-body">
+              <h3 id="一、属性和成员变量"><a href="#一、属性和成员变量" class="headerlink" title="一、属性和成员变量"></a>一、属性和成员变量</h3><h4 id="1、成员变量"><a href="#1、成员变量" class="headerlink" title="1、成员变量"></a>1、成员变量</h4><p>成员变量的声明：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">@interface ViewController ()<br>&#123;<br>    NSString *name;// 成员变量<br>  	UIButton *btn;//实例变量<br>  	id userId;//实例变量<br>&#125;<br>@end<br></code></pre></td></tr></table></figure>
+
+<p>实例变量：class类进行实例化出来的对象。id是一种特殊的class，是OC特有的对象。</p>
+<p>成员变量：{ }内声明的变量，都是成员变量，实例变量是成员变量的一种。</p>
+<h4 id="2、-属性"><a href="#2、-属性" class="headerlink" title="2、 属性"></a>2、 属性</h4><p>属性的声明：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">@interface ViewController ()<br>@property(nonatomic, copy) NSString* name;<br>@end<br></code></pre></td></tr></table></figure>
+
+<p>属性的本质：</p>
+<p>@property = 成员变量+setter+getter ，属性声明时，编译器会自动为我们声明一个带下划线的成员变量，同时会声明setter和getter方法。</p>
+<h3 id="二、关键字"><a href="#二、关键字" class="headerlink" title="二、关键字"></a>二、关键字</h3><p>作用：用来修饰属性</p>
+<h4 id="1、读取权限"><a href="#1、读取权限" class="headerlink" title="1、读取权限"></a>1、读取权限</h4><ul>
+<li><p>readonly</p>
+<p>readonly修饰的属性不会生成setter方法，不能对属性进行修改</p>
+</li>
+<li><p>readwrite (默认)</p>
+<p>readwrite修饰的属性，会生成setter和getter方法</p>
+</li>
+</ul>
+<h4 id="2、原子操作"><a href="#2、原子操作" class="headerlink" title="2、原子操作"></a>2、原子操作</h4><ul>
+<li><p>atomic</p>
+<p>原子性，在多线程中同一个变量可能被多个线程访问甚至更改，进而造成数据污染，因此为了安全，OC默认是atomic，即会对setter方法加锁，相应的也会付出维护原子性（数据加锁解锁等）的系统资源代价。</p>
+</li>
+<li><p>nonatomic</p>
+<p>非原子性，不会对setter方法加锁，应用中如果不是特殊情况（多线程间的通信编码），那么一般还是使用nonatomic来修饰变量的，不会对setter方法加锁，以提高多线程并发访问时的性能。</p>
+</li>
+</ul>
+<h4 id="3、引用计数"><a href="#3、引用计数" class="headerlink" title="3、引用计数"></a>3、引用计数</h4><ul>
+<li><p>strong</p>
+<p>指向并拥有该对象，其修饰的对象引用计数会+1。该对象只有引用计数不为0就不会被销毁。可以通过将对象设置为nil将其强行销毁。</p>
+</li>
+<li><p>assign</p>
+<ul>
+<li><p>修饰基本数据类型，如int、Bool等</p>
+</li>
+<li><p>修饰对象的时候，指向并不拥有该对象，不会使该对象引用计数＋1</p>
+</li>
+<li><p>修饰的对象被释放后，指针仍然指向原来的内存地址， 这时候如果再通过assign指针继续访问对象的话，会因为悬垂指针的原因导致内存泄露或者程序异常</p>
+</li>
+</ul>
+<blockquote>
+<p>悬垂指针：指针所指向的对象已经被释放或者回收，但是指向该对象的指针没有作任何的修改，仍旧指向已经回收的内存地址</p>
+</blockquote>
+</li>
+<li><p>weak</p>
+<ul>
+<li><p>只能修饰对象</p>
+</li>
+<li><p>不改变被修饰对象的引用计数</p>
+</li>
+<li><p>所指向对象在被释放后会自动置为nil</p>
+</li>
+</ul>
+<blockquote>
+<p>weak修饰的对象什么时候会被释放？</p>
+</blockquote>
+</li>
+<li><p>copy</p>
+<p>浅拷贝：</p>
+<ul>
+<li>浅拷贝只是对内存地址的赋值，不会增加内存空间的。 </li>
+<li>会增加被拷贝对象的引用计数+1</li>
+</ul>
+<p>深拷贝：</p>
+<ul>
+<li>会产生新的内存分配</li>
+<li>不会增加被拷贝对象的引用计数</li>
+</ul>
+<p>对比：</p>
+<table>
+<thead>
+<tr>
+<th align="left">源对象类型</th>
+<th>拷贝方式</th>
+<th>目标对象类型</th>
+<th>拷贝类型（深、浅）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">可变对象</td>
+<td>copy</td>
+<td>不可变</td>
+<td>深拷贝</td>
+</tr>
+<tr>
+<td align="left">可变对象</td>
+<td>mutableCopy</td>
+<td>可变</td>
+<td>深拷贝</td>
+</tr>
+<tr>
+<td align="left">不可变对象</td>
+<td>copy</td>
+<td>不可变</td>
+<td>浅拷贝</td>
+</tr>
+<tr>
+<td align="left">不可变对象</td>
+<td>mutableCopy</td>
+<td>可变</td>
+<td>深拷贝</td>
+</tr>
+</tbody></table>
+<p>总结：</p>
+<ul>
+<li><p>使用copy修饰的目标对象都是不可变的。</p>
+</li>
+<li><p>使用mutableCopy修饰的目标对象都是可变的。</p>
+</li>
+<li><p>只有不可变对象使用copy修饰才是浅拷贝，其他的都是深拷贝。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903527815331854">iOS中atomich和nonatomic区别及内部实现 </a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5d138efee024">NSMutableString不要用copy</a></p>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/iOS/">iOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/02/23/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_OC%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%9C%AC%E8%B4%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">iOS_OC对象的本质</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-KVO%E4%B8%8EKVC/">
+                        <span class="hidden-mobile">iOS_KVO与KVC</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"391336e02715065926b8","clientSecret":"daef7899351589e3c4f4abec997213f787648d4f","repo":"GHTYQ.github.io","owner":"GHTYQ","admin":["GHTYQ"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '87ea701f50c08f51048e42fc6c3104fc'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

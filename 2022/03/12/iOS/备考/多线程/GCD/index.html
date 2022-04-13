@@ -1,0 +1,886 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="一、基础概念1. 进程与线程 进程 进程是指系统中正在运行的一个应用程序 每个进程之间是相互独立的，每个进程均运行在专用且受保护的内存空间内 比如同时打开迅雷、Xcode，系统就会分别启动两个进程  线程 1个进程想要执行任务，必须得有线程（每1个进程至少有一条线程） 一个进程（程序）中的所有任务都是在线程中执行  线程的串行 1条线程中的任务是串行执行的（如果一个线程中执行多个任务，那么只能一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GCD">
+<meta property="og:url" content="https://ghtyq.github.io/2022/03/12/iOS/%E5%A4%87%E8%80%83/%E5%A4%9A%E7%BA%BF%E7%A8%8B/GCD/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="一、基础概念1. 进程与线程 进程 进程是指系统中正在运行的一个应用程序 每个进程之间是相互独立的，每个进程均运行在专用且受保护的内存空间内 比如同时打开迅雷、Xcode，系统就会分别启动两个进程  线程 1个进程想要执行任务，必须得有线程（每1个进程至少有一条线程） 一个进程（程序）中的所有任务都是在线程中执行  线程的串行 1条线程中的任务是串行执行的（如果一个线程中执行多个任务，那么只能一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203151723521.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203151726535.png">
+<meta property="article:published_time" content="2022-03-12T15:34:50.000Z">
+<meta property="article:modified_time" content="2022-04-13T03:36:42.966Z">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="备考">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203151723521.png">
+  
+  <title>GCD - TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="GCD">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-12 15:34" pubdate>
+        2022年3月12日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      18k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      55 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">GCD</h1>
+            
+            <div class="markdown-body">
+              <h3 id="一、基础概念"><a href="#一、基础概念" class="headerlink" title="一、基础概念"></a>一、基础概念</h3><h4 id="1-进程与线程"><a href="#1-进程与线程" class="headerlink" title="1. 进程与线程"></a>1. 进程与线程</h4><ol>
+<li><p>进程</p>
+<p>进程是指系统中<font color=orange>正在运行</font>的一个应用程序</p>
+<p>每个进程之间是相互独立的，每个进程均运行在专用且受保护的内存空间内</p>
+<p>比如同时打开迅雷、Xcode，系统就会分别启动两个进程</p>
+</li>
+<li><p>线程</p>
+<p>1个进程想要执行任务，必须得有线程（每1个进程至少有一条线程）</p>
+<p>一个进程（程序）中的所有任务都是在线程中执行</p>
+</li>
+<li><p>线程的串行</p>
+<p>1条线程中的任务是<font color=orange>串行</font>执行的（如果一个线程中执行多个任务，那么只能一个一个的按顺序执行）</p>
+</li>
+<li><p>进程与线程的比较</p>
+<p>线程是CPU调用（执行任务）的最小单位</p>
+<p>进程是CPU分配资源和调度的单位</p>
+<p>一个程序可以对应多个进程，一个进程中可以有多个线程（至少要有一个线程）</p>
+<p>同一个进程内的线程共享进程的资源</p>
+</li>
+</ol>
+<h4 id="2-多线程"><a href="#2-多线程" class="headerlink" title="2. 多线程"></a>2. 多线程</h4><p>1个进程中可以开启多条线程，多条线程可以<font color= orange>并行</font>执行不同的任务（单个线程内任务的执行是串行的）</p>
+<p>多线程的原理（单CPU）：</p>
+<ol>
+<li>同一时间，CPU只能处理1条线程</li>
+<li>多线程并发执行，其实是CPU快速的在多条线程之间调度（切换）</li>
+<li>如果CPU调度线程的时间足够快，就造成了多线程并发的假象。</li>
+</ol>
+<p>多线程的优点：</p>
+<ol>
+<li>能够适当提高程序的执行效率</li>
+<li>能适当提高资源利用率（CPU、内存利用率）</li>
+</ol>
+<p>多线程的缺点：</p>
+<ol>
+<li>创建线程都是有开销的，iOS下主要成本包括：内核数据结构（大约1KB）、栈空间（子线程512KB、主线程1M），创建线程大约需要90毫秒的创建时间</li>
+<li>如果开启大量线程，会降低程序的性能</li>
+<li>线程越多，CPU在调度线程上开销就越大</li>
+<li>程序设计更加复杂，比如线程之间的通信、多线程的数据共享</li>
+</ol>
+<h4 id="3-主线程"><a href="#3-主线程" class="headerlink" title="3. 主线程"></a>3. 主线程</h4><p>一个iOS程序运行后，默认会开启1条线程，成为<font color=orange>主线程</font>或<font color=orange>UI线程</font></p>
+<p>主线程的组要作用：</p>
+<ol>
+<li>显示/刷新UI界面</li>
+<li>处理UI事件</li>
+</ol>
+<p>主线程的使用注意：</p>
+<ol>
+<li>别将比较耗时的操作放到主线程中</li>
+<li>耗时操作会卡主主线程，严重影响UI的流畅度</li>
+</ol>
+<h3 id="二、iOS中多线程的实现方案"><a href="#二、iOS中多线程的实现方案" class="headerlink" title="二、iOS中多线程的实现方案"></a>二、iOS中多线程的实现方案</h3><table>
+<thead>
+<tr>
+<th>技术方案</th>
+<th>简介</th>
+<th>语言</th>
+<th>线程声明周期</th>
+<th>使用频率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pthread</td>
+<td>一套通用的多线程API 、适用于Unic\Linux\Windows等系统、跨平台\可移植</td>
+<td>C</td>
+<td>程序员管理</td>
+<td>几乎不用</td>
+</tr>
+<tr>
+<td>NSThread</td>
+<td>使用更加面向对象、简单易用可直接操作线程对象</td>
+<td>OC</td>
+<td>程序员管理（只管创建）</td>
+<td>偶尔使用</td>
+</tr>
+<tr>
+<td>GCD</td>
+<td>旨在替代NSTread等线程技术、充分利用设备多核</td>
+<td>C</td>
+<td>自动管理</td>
+<td>经常使用</td>
+</tr>
+<tr>
+<td>NSOperation</td>
+<td>基于GCD（底层是GCD）、比GCD多了些更简单实用的功能 、更加面向对象</td>
+<td>OC</td>
+<td>自动管理</td>
+<td>经常使用</td>
+</tr>
+</tbody></table>
+<h4 id="1-NSTread"><a href="#1-NSTread" class="headerlink" title="1. NSTread"></a>1. NSTread</h4><h5 id="1-1-NSThread创建线程的三种方法："><a href="#1-1-NSThread创建线程的三种方法：" class="headerlink" title="1.1 NSThread创建线程的三种方法："></a>1.1 NSThread创建线程的三种方法：</h5><ol>
+<li><p>alloc init 创建线程，需要手动启动线程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">/**<br> 第一个参数：目标对象 self<br> 第二个参数：方法选择器 调用的方法<br> 第三个参数：前面调用方法需要传递的参数<br>*/<br>NSThread *thread = [[NSThread alloc]initWithTarget:self selector:@selector(run:) object:@&quot;123&quot;];<br>// 设置属性<br>thread.name = @&quot;子线程1&quot;;<br>// 设置优先级 取值范围 0.0~1.0 默认优先级是0.5<br>thread.threadPriority = 1.0;<br>// 启动线程<br>[thread start];<br><br>-(void)run:(NSString*)param&#123;<br>    NSLog(@&quot;%@--%@&quot;,param,[NSThread currentThread]);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>类方法 ，分离出子线程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">[NSThread detachNewThreadSelector:@selector(run:) toTarget:self withObject:@&quot;123&quot;];<br></code></pre></td></tr></table></figure></li>
+<li><p>创建后台线程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">[self performSelectorInBackground:@selector(run:) withObject:@&quot;123&quot;];<br></code></pre></td></tr></table></figure></li>
+</ol>
+<p>后面两种方法可以更加快速的创建线程，但是无法拿到线程对象，对线程进行更详细的设置。</p>
+<h5 id="1-2-线程的生命周期："><a href="#1-2-线程的生命周期：" class="headerlink" title="1.2 线程的生命周期："></a>1.2 线程的生命周期：</h5><ol>
+<li><p>启动线程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 新建状态-&gt;就绪状态（可调度线程池）-&gt;运行状态-&gt;阻塞状态-&gt;死亡状态。当前线程执行完毕，自动进入死亡状态<br>// 运行状态<br>- (void)start;<br></code></pre></td></tr></table></figure></li>
+<li><p>阻塞（暂停）线程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 进入阻塞状态<br>+ (void)sleepUntilDate:(NSDate*)date;<br>+ (void)sleepForTimeInterval:(NSTimeInterval)ti;<br></code></pre></td></tr></table></figure></li>
+<li><p>强制停止线程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 进入死亡状态<br>+ (void)exit;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：一旦线程停止了，就不能再次启动线程</p>
+</blockquote>
+</li>
+</ol>
+<h5 id="1-3-原子和非原子属性"><a href="#1-3-原子和非原子属性" class="headerlink" title="1.3 原子和非原子属性"></a>1.3 原子和非原子属性</h5><ol>
+<li><p>OC在定义属性时有noatomic和atomic两种选择</p>
+<p>atomic：原子属性，为setter方法加锁（默认使用）</p>
+<p>noatomic：非原子属性 ，不会为setter方法加锁</p>
+</li>
+<li><p>原子和非原子属性的选择</p>
+<p>atomic：线程安全，需要消耗大量资源</p>
+<p>noatomic：非线程安全，但是我们一般还是会选择使用noatomic（app体量决定了我们很少会遇到多线程资源抢夺的问题）</p>
+</li>
+</ol>
+<h5 id="1-4-线程间通讯"><a href="#1-4-线程间通讯" class="headerlink" title="1.4 线程间通讯"></a>1.4 线程间通讯</h5><ol>
+<li><p>什么叫线程间通讯</p>
+<p>在1个进程中，线程往往不是孤立存在的，多个线程之间需要经常进行通讯</p>
+</li>
+<li><p>线程间通讯的体现</p>
+<p>1个线程传递数据给另1个线程</p>
+<p>在1个线程中执行完待定任务后，转到另1个线程中继续执行任务</p>
+</li>
+<li><p>线程间通讯常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">- (void)performSelectorOnMainThread:(SEL)aSelector withObject:(nullable id)arg waitUntilDone:(BOOL)wait;<br>- (void)performSelector:(SEL)aSelector onThread:(NSThread *)thr withObject:(nullable id)arg waitUntilDone:(BOOL)wait<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="2-GCD"><a href="#2-GCD" class="headerlink" title="2. GCD"></a>2. GCD</h4><h5 id="2-1-简介"><a href="#2-1-简介" class="headerlink" title="2.1 简介"></a>2.1 简介</h5><ol>
+<li><p>什么是GCD?</p>
+<p>全称Grand Central Dispatch，纯C语言，提供了非常多且强大的函数</p>
+</li>
+<li><p>GCD的优势？</p>
+<p>GCD是苹果公司为多核和并行运算提出的解决方案</p>
+<p>GCD会自动利用更多的CPU内核（比如双核、四核）</p>
+<p>GCD会自动管理线程的生命周期（创建线程、调度任务、销毁线程）</p>
+<p>程序员只需要告诉GCD想要执行什么任务，不需要编写任务线程管理代码</p>
+</li>
+</ol>
+<h5 id="2-2-任务和队列"><a href="#2-2-任务和队列" class="headerlink" title="2.2 任务和队列"></a>2.2 任务和队列</h5><p><font>任务和队列是GCD中2个核心概念：</font></p>
+<ul>
+<li><p>任务：执行什么操作</p>
+</li>
+<li><p>队列：用来存放任务</p>
+</li>
+</ul>
+<p>GCD的使用就两个步骤：</p>
+<ul>
+<li><p>定制任务</p>
+<p>确定要做的事情</p>
+</li>
+<li><p>将任务添加到队列中</p>
+<p>GCD会自动将队列中的任务取出，放到对应的线程中执行</p>
+<p>任务的取出遵循队列的FIFO原则</p>
+</li>
+</ul>
+<h6 id="2-2-1-GCD中有两个执行任务常用的函数："><a href="#2-2-1-GCD中有两个执行任务常用的函数：" class="headerlink" title="2.2.1 GCD中有两个执行任务常用的函数："></a>2.2.1 GCD中有两个执行任务常用的函数：</h6><ol>
+<li>用同步的方式执行任务</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">dispatch_sync(dispatch_queue_t queue, DISPATCH_NOESCAPE dispatch_block_t block);<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>用异步的方式来执行任务</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">dispatch_async(dispatch_queue_t queue, dispatch_block_t block);<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>同步和异步的主要影响：能不能开启新的线程</li>
+</ol>
+<p>同步：只能在当前线程中执行任务，不具备开启新的线程的能力。</p>
+<p>异步：可以在新的线程中执行，具备开启新的线程的能力。</p>
+<h6 id="2-2-2-队列的类型"><a href="#2-2-2-队列的类型" class="headerlink" title="2.2.2 队列的类型"></a>2.2.2 队列的类型</h6><p>GCD的队列可以分为两大类型：</p>
+<ol>
+<li><p>并发队列</p>
+<p>可以让多个任务并发（同时）执行（自动开启多个线程同时执行任务）</p>
+<blockquote>
+<p>注意：并发功能只在异步函数下才有效</p>
+</blockquote>
+<p>创建并发队列：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment">第一个参数：C语言字符串，标签</span><br><span class="hljs-comment">第二个参数：队列的类型 1. DISPATCH_QUEUE_CONCURRENT（并发）2.DISPATCH_QUEUE_SERIAL（串行）</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">dispatch_queue_t</span> <span class="hljs-built_in">queue</span> = dispatch_queue_create(<span class="hljs-string">&quot;myQueue&quot;</span>, DISPATCH_QUEUE_CONCURRENT);<br></code></pre></td></tr></table></figure>
+
+<p>GCD默认已经提供了全局并发队列，供整个应用使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment">第一个参数：队列的优先级</span><br><span class="hljs-comment">第二个参数：传0即可</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">dispatch_queue_t</span> globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="hljs-number">0</span>);<br></code></pre></td></tr></table></figure></li>
+<li><p>串行队列</p>
+<p>让任务一个接一个的执行（一个任务执行完毕后，才会执行下一个任务）</p>
+<p>创建串行队列：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment">第一个参数：C语言字符串，标签</span><br><span class="hljs-comment">第二个参数：队列的类型 1. DISPATCH_QUEUE_CONCURRENT（并发）2.DISPATCH_QUEUE_SERIAL（串行）</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">dispatch_queue_t</span> <span class="hljs-built_in">queue</span> = dispatch_queue_create(<span class="hljs-string">&quot;myQueue&quot;</span>, DISPATCH_QUEUE_SERIAL);<br></code></pre></td></tr></table></figure>
+
+<p>主队列：</p>
+<p>主队列是GCD自带的一种特殊的串行队列</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">dispatch_queue_t</span> <span class="hljs-built_in">queue</span> = dispatch_get_main_queue();<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：放在主队列中的任务，都会放到主线程中执行</p>
+</blockquote>
+</li>
+<li><p>并发和串行主要影响：任务的执行方式</p>
+</li>
+</ol>
+<h6 id="2-2-3-各种队列的执行效果"><a href="#2-2-3-各种队列的执行效果" class="headerlink" title="2.2.3 各种队列的执行效果"></a>2.2.3 各种队列的执行效果</h6><table>
+<thead>
+<tr>
+<th></th>
+<th>并发队列</th>
+<th>手动创建的串行队列</th>
+<th>主队列</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>同步（sync）</td>
+<td>没有开启新的线程、串行执行任务</td>
+<td>没有开启新的线程、串行执行任务</td>
+<td>死锁</td>
+</tr>
+<tr>
+<td>异步（async）</td>
+<td>有开启新的线程、并行执行任务</td>
+<td>开启了一条线程、串行执行任务</td>
+<td>没有开启新的线程、串行执行任务</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注意：使用sync函数往当前串行队列添加任务，会卡住当前串行队列</p>
+</blockquote>
+<h5 id="2-3-GCD常用函数"><a href="#2-3-GCD常用函数" class="headerlink" title="2.3 GCD常用函数"></a>2.3 GCD常用函数</h5><h6 id="2-3-1-延迟执行"><a href="#2-3-1-延迟执行" class="headerlink" title="2.3.1 延迟执行"></a>2.3.1 延迟执行</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">//1.performSelector<br>[self performSelector:@selector(task) withObject:nil afterDelay:2.0];<br>//2.NSTimer<br>[NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(task) userInfo:nil repeats:NO];<br>-(void)task&#123;<br>    NSLog(@&quot;2s后执行&quot;);<br>&#125;<br>//3.GCD<br>dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;<br>   NSLog(@&quot;2s后执行&quot;);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h6 id="2-3-2-一次性执行"><a href="#2-3-2-一次性执行" class="headerlink" title="2.3.2 一次性执行"></a>2.3.2 一次性执行</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">static dispatch_once_t onceToken;<br>dispatch_once(&amp;onceToken, ^&#123;<br>  NSLog(@&quot;只执行一次&quot;);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h6 id="2-3-3-栅栏函数"><a href="#2-3-3-栅栏函数" class="headerlink" title="2.3.3 栅栏函数"></a>2.3.3 栅栏函数</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 作用：控制多线程异步执行顺序(任务1、2执行完成后才会执行3)<br>dispatch_queue_t queue = dispatch_queue_create(&quot;myQueue&quot;, DISPATCH_QUEUE_CONCURRENT);<br>dispatch_async(queue, ^&#123;<br>		NSLog(@&quot;任务1---%@&quot;,[NSThread currentThread]);<br>&#125;);<br>dispatch_async(queue, ^&#123;<br>		NSLog(@&quot;任务2---%@&quot;,[NSThread currentThread]);<br>&#125;);<br>dispatch_barrier_async(queue, ^&#123;<br>		NSLog(@&quot;++++&quot;);<br>&#125;);<br>dispatch_async(queue, ^&#123;<br>		NSLog(@&quot;任务3---%@&quot;,[NSThread currentThread]);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：全局并发队列不能使用栅栏函数</p>
+</blockquote>
+<h6 id="2-3-4-快速迭代"><a href="#2-3-4-快速迭代" class="headerlink" title="2.3.4 快速迭代"></a>2.3.4 快速迭代</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">/**<br>第一个参数：遍历次数<br>第二个参数：队列（并发队列）<br>第三个参数：index 索引<br>*/<br>//开子线程，和主线程一起完成遍历任务，任务执行是并发的<br>dispatch_apply(10, dispatch_get_global_queue(0, 0), ^(size_t index) &#123;<br>		NSLog(@&quot;%ld--%@&quot;,index,[NSThread currentThread]);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h6 id="2-3-5-队列组"><a href="#2-3-5-队列组" class="headerlink" title="2.3.5 队列组"></a>2.3.5 队列组</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 创建全局队列<br>dispatch_queue_t queue = dispatch_get_global_queue(0, 0);<br>// 创建队列组<br>dispatch_group_t group = dispatch_group_create();<br>/**<br>1. 封装任务<br>2. 把任务添加到队列<br>3. 监听任务的执行情况，通知group<br>*/<br>dispatch_group_async(group, queue, ^&#123;<br>		NSLog(@&quot;任务1--%@&quot;,[NSThread currentThread]);<br>&#125;);<br>dispatch_group_async(group, queue, ^&#123;<br>		NSLog(@&quot;任务2--%@&quot;,[NSThread currentThread]);<br>&#125;);<br>dispatch_group_async(group, queue, ^&#123;<br>		NSLog(@&quot;任务3--%@&quot;,[NSThread currentThread]);<br>&#125;);<br>// 拦截通知，当队列组中所有任务都执行完毕的时候进入下面的方法<br>dispatch_group_notify(group, queue, ^&#123;<br>		NSLog(@&quot;任务完成&quot;);<br>&#125;);<br>NSLog(@&quot;--end---&quot;);<br><br>// log <br>--end---<br>任务2--&lt;NSThread: 0x600001e79ec0&gt;&#123;number = 6, name = (null)&#125;<br>任务1--&lt;NSThread: 0x600001e66440&gt;&#123;number = 7, name = (null)&#125;<br>任务3--&lt;NSThread: 0x600001e7aec0&gt;&#123;number = 8, name = (null)&#125;<br>任务完成<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-NSOperation"><a href="#3-NSOperation" class="headerlink" title="3. NSOperation"></a>3. NSOperation</h4><p><code>NSOperation</code>配合<code>NSOperationQueue</code>也能实现多线程编程</p>
+<p><code>NSOperation</code>和<code>NSOperationQueue</code>实现多线程的具体步骤：</p>
+<ul>
+<li>先将需要执行的操作封装到一个<code>NSOperation</code>对象中</li>
+<li>然后将<code>NSOperation</code>对象添加到<code>NSOperationQueue</code>中</li>
+<li>系统会自动将<code>NSOperationQueue</code>中的<code>NSOperation</code>取出来</li>
+<li>将取出的<code>NSOperation</code>封装的操作放到一条新线程中执行</li>
+</ul>
+<h5 id="3-1-NSOperation的子类"><a href="#3-1-NSOperation的子类" class="headerlink" title="3.1 NSOperation的子类"></a>3.1 NSOperation的子类</h5><p>NSOperation是一个抽象类，并不具备封装操作的能力，必须使用它的子类</p>
+<p>使用NSOperation子类的方式有3中：</p>
+<ul>
+<li>NSInvocationOperation</li>
+<li>NSBLockOperation</li>
+<li>自定义子类继承NSOperation，实现内部相应的方法</li>
+</ul>
+<h6 id="3-1-1-NSInvocationOperation"><a href="#3-1-1-NSInvocationOperation" class="headerlink" title="3.1.1 NSInvocationOperation"></a>3.1.1 NSInvocationOperation</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 创建操作封装任务<br>/**<br>第一个参数：目标对象<br>第二个参数：调用方法的名称<br>第三个参数：前面方法需要接收的参数<br>*/<br>NSInvocationOperation *op = [[NSInvocationOperation alloc]initWithTarget:self selector:@selector(task) object:nil];<br>// 执行操作<br>[op start];<br><br>-(void)task&#123;<br>    NSLog(@&quot;%s--%@&quot;,__func__,[NSThread currentThread]);<br>&#125;<br><br>// log <br>-[ViewController task]--&lt;_NSMainThread: 0x6000039c4040&gt;&#123;number = 1, name = main&#125;<br></code></pre></td></tr></table></figure>
+
+<p>和NSOperationQueue一起使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 创建操作封装任务<br>NSInvocationOperation *op1 = [[NSInvocationOperation alloc]initWithTarget:self selector:@selector(task1) object:nil];<br> NSInvocationOperation *op2 = [[NSInvocationOperation alloc]initWithTarget:self selector:@selector(task2) object:nil];<br>NSInvocationOperation *op3 = [[NSInvocationOperation alloc]initWithTarget:self selector:@selector(task3) object:nil];<br>// 创建队列<br>/**<br>主队列：[NSOperationQueue mainQueue]和GCD主队列一样，串行执行<br>非主队列：[[NSOperationQueue alloc]init] 非常特殊（同时具备串行和并发的功能）默认情况下非主队列是并发队列<br>*/<br>NSOperationQueue *queue = [[NSOperationQueue alloc]init];<br>[queue addOperation:op1]; //内部调用了[op1 start]<br>[queue addOperation:op2];<br>[queue addOperation:op3];<br><br>-(void)task1&#123;<br>    NSLog(@&quot;%s--%@&quot;,__func__,[NSThread currentThread]);<br>&#125;<br>-(void)task2&#123;<br>    NSLog(@&quot;%s--%@&quot;,__func__,[NSThread currentThread]);<br>&#125;<br>-(void)task3&#123;<br>    NSLog(@&quot;%s--%@&quot;,__func__,[NSThread currentThread]);<br>&#125;<br><br>// log<br>-[ViewController task1]--&lt;NSThread: 0x600003d04880&gt;&#123;number = 7, name = (null)&#125;<br>-[ViewController task2]--&lt;NSThread: 0x600003d16340&gt;&#123;number = 8, name = (null)&#125;<br>-[ViewController task3]--&lt;NSThread: 0x600003d002c0&gt;&#123;number = 9, name = (null)&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="3-1-2-NSBlockOperation"><a href="#3-1-2-NSBlockOperation" class="headerlink" title="3.1.2 NSBlockOperation"></a>3.1.2 NSBlockOperation</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 创建操作<br>NSBlockOperation *op1 = [NSBlockOperation blockOperationWithBlock:^&#123;<br>		NSLog(@&quot;任务1--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>NSBlockOperation *op2 = [NSBlockOperation blockOperationWithBlock:^&#123;<br>		NSLog(@&quot;任务2--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>NSBlockOperation *op3 = [NSBlockOperation blockOperationWithBlock:^&#123;<br>		NSLog(@&quot;任务3--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>// 追加任务<br>// 注意：如果一个操作的任务数量大于1，那么会开子线程并发执行<br>// 注意：不一定是子线程，有可能是主线程<br>[op3 addExecutionBlock:^&#123;<br>		NSLog(@&quot;任务4--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>[op3 addExecutionBlock:^&#123;<br>		NSLog(@&quot;任务5--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>[op3 addExecutionBlock:^&#123;<br>		NSLog(@&quot;任务6--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>    <br>[op1 start];<br>[op2 start];<br>[op3 start];<br>// log<br>任务1--&lt;_NSMainThread: 0x60000116c1c0&gt;&#123;number = 1, name = main&#125;<br>任务2--&lt;_NSMainThread: 0x60000116c1c0&gt;&#123;number = 1, name = main&#125;<br>任务5--&lt;_NSMainThread: 0x60000116c1c0&gt;&#123;number = 1, name = main&#125;<br>任务3--&lt;NSThread: 0x600001177a00&gt;&#123;number = 4, name = (null)&#125;<br>任务4--&lt;NSThread: 0x60000113d2c0&gt;&#123;number = 7, name = (null)&#125;<br>任务6--&lt;NSThread: 0x600001122640&gt;&#123;number = 6, name = (null)&#125;<br></code></pre></td></tr></table></figure>
+
+<p>和NSOperationQueue一起使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 创建操作<br>NSBlockOperation *op1 = [NSBlockOperation blockOperationWithBlock:^&#123;<br>		NSLog(@&quot;任务1--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>NSBlockOperation *op2 = [NSBlockOperation blockOperationWithBlock:^&#123;<br>		NSLog(@&quot;任务2--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>NSBlockOperation *op3 = [NSBlockOperation blockOperationWithBlock:^&#123;<br>		NSLog(@&quot;任务3--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>[op3 addExecutionBlock:^&#123;<br>		NSLog(@&quot;任务4--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>[op3 addExecutionBlock:^&#123;<br>		NSLog(@&quot;任务5--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>[op3 addExecutionBlock:^&#123;<br>		NSLog(@&quot;任务6--%@&quot;,[NSThread currentThread]);<br>&#125;];<br>// 创建队列<br>NSOperationQueue *queue = [[NSOperationQueue alloc]init];<br>// 将操作添加到队列中<br>[queue addOperation:op1];<br>[queue addOperation:op2];<br>[queue addOperation:op3];<br><br>// log<br>任务3--&lt;NSThread: 0x600001b282c0&gt;&#123;number = 5, name = (null)&#125;<br>任务2--&lt;NSThread: 0x600001b32640&gt;&#123;number = 6, name = (null)&#125;<br>任务1--&lt;NSThread: 0x600001b67680&gt;&#123;number = 4, name = (null)&#125;<br>任务4--&lt;NSThread: 0x600001b2cb40&gt;&#123;number = 3, name = (null)&#125;<br>任务5--&lt;NSThread: 0x600001b3fc80&gt;&#123;number = 7, name = (null)&#125;<br>任务6--&lt;NSThread: 0x600001b62340&gt;&#123;number = 8, name = (null)&#125;<br><br>// 简单使用<br>[queue addOperationWithBlock:^&#123;// 相当于创建操作后将操作添加到队列中<br>		NSLog(@&quot;任务7--%@&quot;,[NSThread currentThread]);<br>&#125;];<br></code></pre></td></tr></table></figure>
+
+<h6 id="3-1-3-自定义子类"><a href="#3-1-3-自定义子类" class="headerlink" title="3.1.3 自定义子类"></a>3.1.3 自定义子类</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 继承NSOperation，重写mian方法<br>/**<br> 告知要执行的任务<br> 1. 有利于代码隐藏<br> 2. 复用性<br> */<br>- (void)main&#123;<br>    NSLog(@&quot;main---%@&quot;,[NSThread currentThread]);<br>&#125;<br>---------------------------------------<br>TOperation *op1 = [[TOperation alloc]init];<br>TOperation *op2 = [[TOperation alloc]init];<br>NSOperationQueue *queue = [[NSOperationQueue alloc]init];<br>[queue addOperation:op1];<br>[queue addOperation:op2];<br><br>// log<br>main---&lt;NSThread: 0x60000149acc0&gt;&#123;number = 7, name = (null)&#125;<br>main---&lt;NSThread: 0x600001496580&gt;&#123;number = 8, name = (null)&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="3-2-NSOperation的其它用法"><a href="#3-2-NSOperation的其它用法" class="headerlink" title="3.2 NSOperation的其它用法"></a>3.2 NSOperation的其它用法</h5><h6 id="3-2-1-最大并发数"><a href="#3-2-1-最大并发数" class="headerlink" title="3.2.1 最大并发数"></a>3.2.1 最大并发数</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 同一时间最多有多少任务可以执行<br>// maxConcurrentOperationCount &gt; 1 并发队列<br>// maxConcurrentOperationCount == 1 串行队列<br>// maxConcurrentOperationCount == 0 不会执行<br>// maxConcurrentOperationCount == -1 特殊意义 最大值 表示不受限制<br>queue.maxConcurrentOperationCount = 1;<br>// 注意：串行执行任务 != 只开一条线程（线程同步）<br></code></pre></td></tr></table></figure>
+
+<h6 id="3-2-2-暂停"><a href="#3-2-2-暂停" class="headerlink" title="3.2.2 暂停"></a>3.2.2 暂停</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 不能暂停当前正在处于执行状态的任务<br>[queue setSuspended:YES];<br></code></pre></td></tr></table></figure>
+
+<h6 id="3-2-3-恢复"><a href="#3-2-3-恢复" class="headerlink" title="3.2.3 恢复"></a>3.2.3 恢复</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">[queue setSuspended:NO];<br></code></pre></td></tr></table></figure>
+
+<h6 id="3-2-4-取消"><a href="#3-2-4-取消" class="headerlink" title="3.2.4 取消"></a>3.2.4 取消</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 取消，不可恢复<br>[queue cancelAllOperations];<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意自定义的<code>NSOperation</code>，<code>mian</code>函数的多个任务是无法被暂停的，它对于<code>queue</code>来说这个<code>main</code>函数里面是一个任务。</p>
+<p>可以通过判断<code>isCancelled</code>的状态，取消任务（<code>if(self.isCancelled) Return</code>）</p>
+</blockquote>
+<h6 id="3-2-5-操作依赖和监听"><a href="#3-2-5-操作依赖和监听" class="headerlink" title="3.2.5 操作依赖和监听"></a>3.2.5 操作依赖和监听</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 添加操作依赖 可以夸队列依赖<br>[op1 addDependency:op2];<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：不能循环依赖</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 操作监听<br>op1.completionBlock = ^&#123;<br>		NSLog(@&quot;操作完成&quot;);<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="三、多线程安全隐患及解决方案"><a href="#三、多线程安全隐患及解决方案" class="headerlink" title="三、多线程安全隐患及解决方案"></a>三、多线程安全隐患及解决方案</h3><ul>
+<li><p>资源共享</p>
+<p>一块资源可能会被多个线程共享，也就是多个线程可能会访问同一块资源</p>
+</li>
+<li><p>当多个线程访问同一块资源，很容易引起数据错乱和数据安全问题</p>
+</li>
+</ul>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203151723521.png" srcset="/img/loading.gif" lazyload alt="安全隐患" style="zoom:40%;margin-left:10px" />
+
+<p>解决方案：使用线程同步技术（同步，就是协同步调，按预定的先后次序进行）</p>
+<p>常见的线程同步技术是：加锁</p>
+<p>互斥锁</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202203151726535.png" srcset="/img/loading.gif" lazyload alt="互斥锁" style="zoom: 25%;margin-left:10px" />
+
+<p>互斥锁使用前提：多条线程抢用同一块资源</p>
+<p>互斥锁使用格式：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 是对mutex recursive的封装 <br>@synchronized (锁对象（一般是self）) &#123;// 需要锁定的代码&#125;<br></code></pre></td></tr></table></figure>
+
+<p>互斥锁的优缺点：</p>
+<ul>
+<li>优点：能有效防止因多线程抢夺资源造成的数据安全问题</li>
+<li>缺点：需要消耗大量的CPU资源</li>
+</ul>
+<p>另外介绍接种锁🔐：</p>
+<h4 id="1-OSSpinLock"><a href="#1-OSSpinLock" class="headerlink" title="1. OSSpinLock"></a>1. OSSpinLock</h4><p>OSSpinLock叫做“自旋锁”，等待所的线程会处于忙等（busy-wait）状态，一直占用着CPU资源 </p>
+<blockquote>
+<p>注意：目前已经不再安全，可能会出现优先级反转问题（如果等待锁的线程优先级比较高，它会一直占用着CPU资源，优先级低的线程就无法释放锁）</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &lt;libkern/OSAtomic.h&gt;<br><br>// 初始化<br>OSSpinLock lock = OS_SPINLOCK_INIT;<br>// 尝试加锁（如果需要等待就不加锁，直接返回false；如果不需要等待就加锁，返回true）<br>bool result = OSSpinLockTry(&amp;lock)；<br>// 加锁<br>OSSpinLockLock(&amp;lock);<br>// 解锁<br>OSSpinLockUnlock(&amp;lock);<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-os-unfair-lock"><a href="#2-os-unfair-lock" class="headerlink" title="2. os_unfair_lock"></a>2. os_unfair_lock</h4><p>os_unfair_lock用于取代不安全的NSSpinLock，从iOS10 才开始支持</p>
+<p>从底层调用看，等待os_unfair_lock锁的线程会处于休眠状态，并非忙等</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &lt;os/lock.h&gt;<br><br>// 初始化<br>os_unfair_lock lock = OS_UNFAIR_LOCK_INIT;<br>// 尝试加锁<br>os_unfair_lock_trylock(&amp;lock);<br>// 加锁<br>os_unfair_lock_lock(&amp;lock);<br>// 解锁<br>os_unfair_lock_unlock(&amp;lock);<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-pthread-mutex"><a href="#3-pthread-mutex" class="headerlink" title="3. pthread_mutex"></a>3. pthread_mutex</h4><p>mutex叫做<font color=orange>互斥锁</font>，等待锁的线程会处于休眠状态</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &lt;pthread.h&gt;<br><br>@property(nonatomic, assign) pthread_mutex_t mutex;<br><br>// 初始化锁的属性<br>pthread_mutexattr_t attr;<br>pthread_mutexattr_init(&amp;attr);<br>// 设置属性<br>/**<br>Mutex type attributes<br>#define PTHREAD_MUTEX_NORMAL        0<br>#define PTHREAD_MUTEX_ERRORCHECK    1<br>#define PTHREAD_MUTEX_RECURSIVE        2  //递归锁<br>#define PTHREAD_MUTEX_DEFAULT        PTHREAD_MUTEX_NORMAL<br>*/<br>pthread_mutexattr_settype(&amp;attr, PTHREAD_MUTEX_DEFAULT);<br>// 初始化锁<br>pthread_mutex_init(&amp;_mutex, &amp;attr);<br><br>// 尝试加锁<br>pthread_mutex_trylock(&amp;_mutex);<br>// 加锁<br>pthread_mutex_lock(&amp;_mutex);<br>// 解锁<br>pthread_mutex_unlock(&amp;_mutex);<br>// 销毁相关资源<br>pthread_mutexattr_destroy(&amp;attr);<br>pthread_mutex_destroy(&amp;_mutex);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 条件<br>// 初始化锁<br>pthread_mutex_t mutex;<br>// NULL岱庙使用默认属性<br>pthread_mutex_init(&amp;mutex, NULL);<br>// 初始化条件<br>pthread_cond_t cond;<br>pthread_cond_init(&amp;cond，NULL);<br>// 等待条件(进入休眠状态，放开mutex锁；被唤醒后，会再次对mutex加锁)<br>pthread_cond_wait(cond，&amp;mutex);<br>// 激活一个等待该条件的线程<br>pthread_cond_signal(&amp;cond);<br>// 激活所有等待该条件的线程<br>pthread_cond_broadcast(&amp;cond);<br>// 销毁资源<br>pthread_mutex_destroy(&amp;mutex);<br>pthread_cond_destory(&amp;cond);<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-NSLock、NSRecursiveLock、NSCondition"><a href="#4-NSLock、NSRecursiveLock、NSCondition" class="headerlink" title="4. NSLock、NSRecursiveLock、NSCondition"></a>4. NSLock、NSRecursiveLock、NSCondition</h4><p>NSLock是对mutex普通锁的封装。</p>
+<p>NSRecursiveLock是对mutex递归锁的封装，API跟NSLock基本一致。</p>
+<p>NSCondition是对mutex和condition的封装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 初始化锁<br>NSLock *lock = [[NSlock alloc] init];<br>// 尝试加锁<br>[lock tryLock];<br>// 加锁<br>[lock lock];<br>// 解锁<br>[lock unlock];<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-dispatch-queue"><a href="#5-dispatch-queue" class="headerlink" title="5. dispatch_queue"></a>5. dispatch_queue</h4><p>直接使用GCD的串行队列，也可以实现线程同步</p>
+<h4 id="6-dispatch-semaphore"><a href="#6-dispatch-semaphore" class="headerlink" title="6. dispatch_semaphore"></a>6. dispatch_semaphore</h4><ul>
+<li>semaphore叫做”信号量“</li>
+<li>信号量的初始值，可以用来控制线程并发访问的最大数量</li>
+<li>信号量初始值为1，代表同时只允许一条线程访问资源，保证线程同步</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 信号量的初始值<br>int value = 1;<br>dispatch_semaphore_t semaphore = dispatch_semophore_creat(value);<br>// 如果信号量的值&lt;=0，当前线程就会及如休眠状态（直到信号量的值&gt;0）<br>// 如果信号量的值&gt;0，就减1，然后往下执行后面的代码<br>dispatch_semaphore_wait(semaphore,DISAPTCH_TIME_FOREVER)；<br>// 让信号量的值加1<br>dispatch_semaphore_signal(semaphore);<br></code></pre></td></tr></table></figure>
+
+<h3 id="四、iOS中读写安全方案"><a href="#四、iOS中读写安全方案" class="headerlink" title="四、iOS中读写安全方案"></a>四、iOS中读写安全方案</h3><p>经典场景“多读单写”</p>
+<h4 id="1-pthread-rwlock"><a href="#1-pthread-rwlock" class="headerlink" title="1. pthread_rwlock"></a>1. pthread_rwlock</h4><p>读写锁</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">#import &quot;pthread.h&quot;<br><br>@property(nonatomic, assign) pthread_rwlock_t lock;<br><br>// 初始化锁<br>pthread_rwlock_t lock;<br>// 读-加锁<br>pthread_rwlock_rdlock(&amp;_lock);<br>// 读-尝试加锁<br>pthread_rwlock_tryrdlock(&amp;_lock);<br>// 写-加锁<br>pthread_rwlock_wrlock(&amp;_lock);<br>// 写-尝试加锁<br>pthread_rwlock_trywrlock(&amp;_lock);<br>// 解锁<br>pthread_rwlock_unlock(&amp;_lock);<br>// 销毁<br>pthread_rwlock_destroy(&amp;_lock);<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-dispatch-barrrier-async"><a href="#2-dispatch-barrrier-async" class="headerlink" title="2. dispatch_barrrier_async"></a>2. dispatch_barrrier_async</h4><p>异步栅栏调用</p>
+<ul>
+<li>这个函数传入的并发队列必须是自己通过dispatch_queue_create创建的</li>
+<li>如果传入的是一个串行或是一个全局的并发队列，那这个函数等同于dispatch_async函数的结果</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">dispatch_queue_t queue = dispatch_queue_create(&quot;myQueue&quot;, DISPATCH_QUEUE_CONCURRENT);<br>// 读<br>dispatch_async(queue, ^&#123;<br><br>&#125;);<br>// 写<br>dispatch_barrier_async(queue, ^&#123;<br><br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h3 id="面试题"><a href="#面试题" class="headerlink" title="面试题"></a>面试题</h3><ol>
+<li><p>下面代码打印结果是什么？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">dispatch_queue_t queue = dispatch_get_global_queue(0, 0);<br>dispatch_async(queue, ^&#123;<br>   NSLog(@&quot;1&quot;);<br>   [self performSelector:@selector(test) withObject:nil afterDelay:.0];<br>   NSLog(@&quot;3&quot;);<br>&#125;);<br><br>-(void)test&#123;<br>    NSLog(@&quot;2&quot;);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>打印结果：1、3</p>
+<p>原因：</p>
+<p>performSelect:withObject:afterDely:的本质是往runloop中添加定时器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 在GNUStep中查看performSelect的底层实现<br>- (void) performSelector: (SEL)aSelector<br>	      withObject: (id)argument<br>	      afterDelay: (NSTimeInterval)seconds<br>&#123;<br>  NSRunLoop		*loop = [NSRunLoop currentRunLoop];<br>  GSTimedPerformer	*item;<br><br>  item = [[GSTimedPerformer alloc] initWithSelector: aSelector<br>					     target: self<br>					   argument: argument<br>					      delay: seconds];<br>  [[loop _timedPerformers] addObject: item];<br>  RELEASE(item);<br>  [loop addTimer: item-&gt;timer forMode: NSDefaultRunLoopMode];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>子线程默认是没有开启runloop的</p>
+<p>解决方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">dispatch_queue_t queue = dispatch_get_global_queue(0, 0);<br>    dispatch_async(queue, ^&#123;<br>        NSLog(@&quot;1&quot;);<br>        [self performSelector:@selector(test) withObject:nil afterDelay:.0];<br>        NSLog(@&quot;3&quot;);<br>        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];<br>    &#125;);<br><br>-(void)test&#123;<br>    NSLog(@&quot;2&quot;);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p> 下面代码的执行结果？</p>
+</li>
+</ol>
+   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">NSThread *thread = [[NSThread alloc]initWithBlock:^&#123;<br>		NSLog(@&quot;1&quot;);<br>&#125;];<br>[thread start];<br>[self performSelector:@selector(test) onThread:thread withObject:nil waitUntilDone:YES];<br><br>-(void)test&#123;<br>    NSLog(@&quot;2&quot;);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>   执行结果：打印1; 抛出<code>target thread exited while waiting for the perform</code>异常</p>
+<p>   原因：子线程在完成block中的代码后，退出了</p>
+<p>   解决方法：</p>
+   <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs objc"><span class="hljs-built_in">NSThread</span> *thread = [[<span class="hljs-built_in">NSThread</span> alloc]initWithBlock:^&#123;<br>		<span class="hljs-built_in">NSLog</span>(<span class="hljs-string">@&quot;1&quot;</span>);<br>		[[<span class="hljs-built_in">NSRunLoop</span> currentRunLoop] addPort:[[<span class="hljs-built_in">NSPort</span> alloc]init] forMode:<span class="hljs-built_in">NSDefaultRunLoopMode</span>];<br>		[[<span class="hljs-built_in">NSRunLoop</span> currentRunLoop] runMode:<span class="hljs-built_in">NSDefaultRunLoopMode</span> beforeDate:[<span class="hljs-built_in">NSDate</span> distantFuture]];<br>&#125;];<br>[thread start];<br>[<span class="hljs-keyword">self</span> performSelector:<span class="hljs-keyword">@selector</span>(test) onThread:thread withObject:<span class="hljs-literal">nil</span> waitUntilDone:<span class="hljs-literal">YES</span>];<br><br>-(<span class="hljs-keyword">void</span>)test&#123;<br>    <span class="hljs-built_in">NSLog</span>(<span class="hljs-string">@&quot;2&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>如何使用GCD实现以下功能，异步并发执行任务1和任务2，都执行完成之后回到主线程执行任务3</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">// 创建队列组<br>dispatch_group_t group = dispatch_group_create();<br>// 创建并发队列<br>dispatch_queue_t queue = dispatch_queue_create(&quot;my_queue&quot;, DISPATCH_QUEUE_CONCURRENT);<br>// 添加异步任务<br>dispatch_group_async(group, queue, ^&#123;<br>    NSLog(@&quot;任务1&quot;);<br>&#125;);<br>dispatch_group_async(group, queue, ^&#123;<br>    NSLog(@&quot;任务2&quot;);<br>&#125;);<br>// 回到主队列<br>dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;<br>		NSLog(@&quot;任务3&quot;);<br>&#125;);<br></code></pre></td></tr></table></figure></li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/iOS/">iOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/17/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%92%8C%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">算法的时间复杂度和空间复杂度</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/08/iOS/%E5%A4%87%E8%80%83/Runtime&amp;Runloop/iOS_Runloop/">
+                        <span class="hidden-mobile">iOS_RunLoop</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"391336e02715065926b8","clientSecret":"daef7899351589e3c4f4abec997213f787648d4f","repo":"GHTYQ.github.io","owner":"GHTYQ","admin":["GHTYQ"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '032ac6eeb2b5366b29fff46a07339311'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

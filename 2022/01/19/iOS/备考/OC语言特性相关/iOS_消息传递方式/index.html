@@ -1,0 +1,637 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="前言我们通常都是用什么方式，实现iOS不同界面的消息传递呢？系统到底为我们提供了多少种方式呢？怀着这样的想法，在此对常用的消息传递的方式做了个简单的总结。 一、代理1. 代理的定义？代理是一种软件设计模式，在iOS当中以@protocal形式体现，实现消息一对一的传递 2. 代理的实现代理有三部分组成：  协议 定义属性和方法 协议方法有两个修饰符@Required和@Optional，被@Req">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_消息传递方式">
+<meta property="og:url" content="https://ghtyq.github.io/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS_%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="前言我们通常都是用什么方式，实现iOS不同界面的消息传递呢？系统到底为我们提供了多少种方式呢？怀着这样的想法，在此对常用的消息传递的方式做了个简单的总结。 一、代理1. 代理的定义？代理是一种软件设计模式，在iOS当中以@protocal形式体现，实现消息一对一的传递 2. 代理的实现代理有三部分组成：  协议 定义属性和方法 协议方法有两个修饰符@Required和@Optional，被@Req">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202151007480.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202141642268.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202171715864.png">
+<meta property="article:published_time" content="2022-01-19T15:34:07.000Z">
+<meta property="article:modified_time" content="2022-04-13T03:36:42.966Z">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="备考">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202151007480.png">
+  
+  <title>iOS_消息传递方式 - TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="iOS_消息传递方式">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-19 15:34" pubdate>
+        2022年1月19日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">iOS_消息传递方式</h1>
+            
+            <div class="markdown-body">
+              <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>我们通常都是用什么方式，实现iOS不同界面的消息传递呢？系统到底为我们提供了多少种方式呢？怀着这样的想法，在此对常用的消息传递的方式做了个简单的总结。</p>
+<h3 id="一、代理"><a href="#一、代理" class="headerlink" title="一、代理"></a>一、代理</h3><h4 id="1-代理的定义？"><a href="#1-代理的定义？" class="headerlink" title="1. 代理的定义？"></a>1. 代理的定义？</h4><p>代理是一种软件设计模式，在iOS当中以<code>@protocal</code>形式体现，实现消息一对一的传递</p>
+<h4 id="2-代理的实现"><a href="#2-代理的实现" class="headerlink" title="2. 代理的实现"></a>2. 代理的实现</h4><p>代理有三部分组成：</p>
+<ul>
+<li><p>协议</p>
+<p>定义属性和方法</p>
+<p>协议方法有两个修饰符<code>@Required</code>和<code>@Optional</code>，被<code>@Required</code>修饰的方法，必须要实现，而<code>@Optional</code>修饰的方法可以实现也可以不实现。</p>
+</li>
+<li><p>委托方</p>
+<p>按照协议，告知代理方需要实现的方法</p>
+</li>
+<li><p>代理方</p>
+<p>遵守协议，实现协议方法（有的需要完成委托方需求的同时，返回处理结果）</p>
+</li>
+</ul>
+<p>图示：</p>
+<p><img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202151007480.png" srcset="/img/loading.gif" lazyload alt="代理图解"></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">import</span> UIKit<br><span class="hljs-comment">// 协议</span><br><span class="hljs-keyword">@objc</span> <span class="hljs-class"><span class="hljs-keyword">protocol</span> <span class="hljs-title">TestViewDelegate</span>:<span class="hljs-title">NSObjectProtocol</span></span>&#123; <br>   <span class="hljs-keyword">@objc</span> <span class="hljs-keyword">optional</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">testViewSelected</span>(<span class="hljs-params">testView</span>: <span class="hljs-type">TestView</span>)</span><br>&#125;<br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestView</span>: <span class="hljs-title">UIView</span> </span>&#123;<br>    <span class="hljs-keyword">weak</span> <span class="hljs-keyword">var</span> delegate:<span class="hljs-type">TestViewDelegate</span>?<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">touchesBegan</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">touches</span>: <span class="hljs-type">Set</span>&lt;<span class="hljs-type">UITouch</span>&gt;, <span class="hljs-params">with</span> <span class="hljs-params">event</span>: <span class="hljs-type">UIEvent</span>?)</span> &#123;<br>        <span class="hljs-keyword">self</span>.delegate<span class="hljs-operator">?</span>.testViewSelected<span class="hljs-operator">?</span>(testView: <span class="hljs-keyword">self</span>)<br>    &#125;<br>&#125;<br><span class="hljs-operator">---------------------------------------------------------------------------------</span><br><span class="hljs-keyword">import</span> UIKit<br><span class="hljs-comment">// 遵守协议</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ViewController</span>: <span class="hljs-title">UIViewController</span>,<span class="hljs-title">TestViewDelegate</span> </span>&#123;<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">viewDidLoad</span>()</span> &#123;<br>        <span class="hljs-keyword">super</span>.viewDidLoad()<br>        <span class="hljs-keyword">let</span> testV <span class="hljs-operator">=</span> <span class="hljs-type">TestView</span>.<span class="hljs-keyword">init</span>(frame: <span class="hljs-type">UIScreen</span>.main.bounds)<br>        testV.backgroundColor <span class="hljs-operator">=</span> <span class="hljs-type">UIColor</span>.red<br>        <span class="hljs-comment">// 设置代理</span><br>        testV.delegate <span class="hljs-operator">=</span> <span class="hljs-keyword">self</span><br>        <span class="hljs-keyword">self</span>.view.addSubview(testV)<br>    &#125;<br>    <span class="hljs-comment">//实现协议方法</span><br>    <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">testViewSelected</span>(<span class="hljs-params">testView</span>: <span class="hljs-type">TestView</span>)</span> &#123;<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;实现协议&quot;</span>)<br>    &#125;<br>&#125;                   <br></code></pre></td></tr></table></figure>
+
+<h4 id="3-为什么设置代理属性需要用weak？"><a href="#3-为什么设置代理属性需要用weak？" class="headerlink" title="3. 为什么设置代理属性需要用weak？"></a>3. 为什么设置代理属性需要用weak？</h4><p>以在控制器中使用<code>tableview</code>为例，我们在控制器中通过<code>alloc</code>、<code>new</code>等方式创建<code>tableview</code>视图对象的时候，当前控制器会强引用着<code>tableview</code>。如果我们修饰<code>tableview</code>的代理用的是<code>strong</code>，在设置代理的时候， 代理对象往往会设置成<code>self</code>即当前控制器，导致<code>tableview</code>又强引用这控制器。这就造成了循环引用。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs swift">tableView.delegate <span class="hljs-operator">=</span> <span class="hljs-keyword">self</span><br><span class="hljs-keyword">self</span> -&gt; tableView -&gt; delegate -&gt; <span class="hljs-keyword">self</span><br></code></pre></td></tr></table></figure>
+
+<p>循环引用的危害：</p>
+<ul>
+<li>会使内存消耗过高，导致内存泄露</li>
+<li>性能变差</li>
+<li>可能会出现闪退</li>
+</ul>
+<h4 id="4-代理的原理"><a href="#4-代理的原理" class="headerlink" title="4. 代理的原理"></a>4. 代理的原理</h4><p><font color=orange># warning 后面补充</font></p>
+<h3 id="二、通知（NSNotification）"><a href="#二、通知（NSNotification）" class="headerlink" title="二、通知（NSNotification）"></a>二、通知（NSNotification）</h3><h4 id="1-什么是通知"><a href="#1-什么是通知" class="headerlink" title="1. 什么是通知?"></a>1. 什么是通知?</h4><ol>
+<li>通知是使用观察者模式实现的用于跨层传递消息的机制</li>
+<li>传递方式为一对多</li>
+</ol>
+<h4 id="2-如何实现通知机制？"><a href="#2-如何实现通知机制？" class="headerlink" title="2. 如何实现通知机制？"></a>2. 如何实现通知机制？</h4><p>通知中心可能会维护一个<code>map</code>表，<code>key</code>为<code>notificationName</code>  <code>value</code>为<code>observers_list</code>，<code>observers_list</code> 包含通知接收的观察者以及观察者的调用方法</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202141642268.png" srcset="/img/loading.gif" lazyload alt="通知机制" style="margin-left: 10px; zoom: 67%;" />
+
+<h4 id="3-通知是同步还是异步？"><a href="#3-通知是同步还是异步？" class="headerlink" title="3. 通知是同步还是异步？"></a>3. 通知是同步还是异步？</h4><p><code>NSNotification</code>默认在主线程中通知是<font color=Orange>同步的</font>，当通知产生的时候，通知中心会一直等到所有的观察者都收到并处理通知结束，然后才会返回发送通知的地方继续执行后面的代码。但是可以将通知的发送或者将通知的处理方法放入子线程中来避免线程阻塞。</p>
+<p><strong>验证：</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-comment">// 自定义消息名称</span><br><span class="hljs-keyword">let</span> notiName <span class="hljs-operator">=</span> <span class="hljs-string">&quot;postNoti&quot;</span><br><span class="hljs-comment">// 发送通知</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;即将发送通知&quot;</span>)<br><span class="hljs-type">NotificationCenter</span>.default.post(name: <span class="hljs-type">NSNotification</span>.<span class="hljs-type">Name</span>(notiName), object: <span class="hljs-literal">nil</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;发送通知后执行&quot;</span>)<br><br><br><span class="hljs-comment">// 注册通知的观察者</span><br><span class="hljs-type">NotificationCenter</span>.default.addObserver(<span class="hljs-keyword">self</span>, selector: #selector(reciveNoti), name: <span class="hljs-type">NSNotification</span>.<span class="hljs-type">Name</span>(notiName), object: <span class="hljs-literal">nil</span>)<br><span class="hljs-comment">// 收到通知</span><br><span class="hljs-keyword">@objc</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">reciveNoti</span>()</span>&#123;<br>    sleep(<span class="hljs-number">10</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;收到通知后执行&quot;</span>)<br>&#125;<br><br><span class="hljs-comment">// 执行结果</span><br>即将发送通知<br>收到通知后执行<br>发送通知后执行<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决线程阻塞：</strong></p>
+<ol>
+<li><p>将通知发送放入子线程</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-comment">// 发送通知</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;即将发送通知&quot;</span>)<br><span class="hljs-type">DispatchQueue</span>.global().async &#123;<br>		<span class="hljs-type">NotificationCenter</span>.default.post(name: <span class="hljs-type">NSNotification</span>.<span class="hljs-type">Name</span>(notiName), object: <span class="hljs-literal">nil</span>)<br>&#125;<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;发送通知后执行&quot;</span>)<br><br><span class="hljs-comment">// 执行结果</span><br>即将发送通知<br>发送通知后执行<br>收到通知后执行<br></code></pre></td></tr></table></figure></li>
+<li><p>将通知处理方法放入子线程</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-comment">// 收到通知</span><br><span class="hljs-keyword">@objc</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">reciveNoti</span>()</span>&#123;<br>		<span class="hljs-type">DispatchQueue</span>.global().async &#123;<br>				sleep(<span class="hljs-number">10</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;收到通知后执行&quot;</span>)<br>    &#125;<br>&#125;<br><span class="hljs-comment">// 执行结果</span><br>即将发送通知<br>发送通知后执行<br>收到通知后执行<br></code></pre></td></tr></table></figure></li>
+<li><p>将通知发送放到通知异步缓冲队列中</p>
+<p><code>NSNotificationQueue</code>是一个通知缓冲队列，通常以FIFO（先进先出）的规则维护通知队列的发送。向缓冲队列添加通知有三个枚举：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs swift"> <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">PostingStyle</span> : <span class="hljs-title">UInt</span> </span>&#123;<br>   	<span class="hljs-keyword">case</span> whenIdle <span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-comment">// 空闲时发送</span><br>   	<span class="hljs-keyword">case</span> asap <span class="hljs-operator">=</span> <span class="hljs-number">2</span> 		<span class="hljs-comment">// 尽快发送</span><br>   	<span class="hljs-keyword">case</span> now <span class="hljs-operator">=</span> <span class="hljs-number">3</span>  		<span class="hljs-comment">// 立即发送</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs swift"><br><span class="hljs-comment">// 发送通知</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;即将发送通知&quot;</span>)<br><span class="hljs-keyword">let</span> noti <span class="hljs-operator">=</span> <span class="hljs-type">Notification</span>.<span class="hljs-keyword">init</span>(name: <span class="hljs-type">Notification</span>.<span class="hljs-type">Name</span>(notiName), object: <span class="hljs-literal">nil</span>, userInfo: [<span class="hljs-string">&quot;key&quot;</span>:<span class="hljs-string">&quot;value&quot;</span>])<br><span class="hljs-type">NotificationQueue</span>.default.enqueue(noti, postingStyle: .asap)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;发送通知后执行&quot;</span>)<br><br><span class="hljs-comment">// 执行结果</span><br>即将发送通知<br>发送通知后执行<br>收到通知后执行<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="4-通知和代理的区别"><a href="#4-通知和代理的区别" class="headerlink" title="4. 通知和代理的区别"></a>4. 通知和代理的区别</h4><ul>
+<li>主要区别是代理传递消息是一对一，通知是一对多</li>
+<li>代理模式中，reciver（接收者）可以返回值给sender（发送者），实现一种回调，而观察者模式不可以</li>
+</ul>
+<h3 id="三、KVO"><a href="#三、KVO" class="headerlink" title="三、KVO"></a>三、KVO</h3><p>​    参考文章<a href="">iOS_KVC与KVO</a></p>
+<h3 id="四、Block"><a href="#四、Block" class="headerlink" title="四、Block"></a>四、Block</h3><h4 id="1-什么是Block？"><a href="#1-什么是Block？" class="headerlink" title="1. 什么是Block？"></a>1. 什么是Block？</h4><p>Block是将函数及其执行上下文封装起来的对象。</p>
+<h4 id="2-Block有哪几种定义的方式？"><a href="#2-Block有哪几种定义的方式？" class="headerlink" title="2. Block有哪几种定义的方式？"></a>2. Block有哪几种定义的方式？</h4><p>在Objective-C中，<code>block</code>定义包含了<code>block</code>的类型声明和实现，基本形式如下：</p>
+<p><font color=orange >返回值类型(^block名称)(参数类型)=^(参数类型和参数名){}</font></p>
+<p>其中，返回值类型和参数都可以为空。如果有参数，那么在定义<code>block</code>的时候，必须标明参数的类型和参数名。所以，<code>block</code>大致有三种定义方式。</p>
+<ul>
+<li><p>没有返回值，没有参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">void (^myBlock)(void) = ^&#123;<br>    // 代码<br>&#125;;<br></code></pre></td></tr></table></figure></li>
+<li><p>有返回值，没有参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">NSString* (^myBlock)(void) = ^&#123;<br>    // 代码<br>    return @&quot;返回值&quot;;<br>&#125;;<br></code></pre></td></tr></table></figure></li>
+<li><p>有返回值，有参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">NSInteger (^myBlock)(NSInteger) = ^(NSInteger a)&#123;<br>    // 代码<br>    return a+1;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>像在Objective-C中字符串对象属于<code>NSString</code>类型一样，<code>blcok</code>也有属于自己的类型，<code>block</code>类型的格式就是：</p>
+<p><font color=orange>返回值类型(^)参数类型</font></p>
+<p>也就是说，上面第一种定义方式的block类型就是<code>void(^)(void)</code>，<code>myBlock</code>不是变量名，而是这种<code>block</code>类型的别名。我们可以使用<code>typedef</code>关键字定义block类型。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">typedef void (^MyBlock)(void);<br>@interface ViewController ()<br>@property(nonatomic,strong)MyBlock myblock;<br>@end<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-在ARC环境下，-是否需要使用copy关键字来修饰block？"><a href="#3-在ARC环境下，-是否需要使用copy关键字来修饰block？" class="headerlink" title="3. 在ARC环境下， 是否需要使用copy关键字来修饰block？"></a>3. 在ARC环境下， 是否需要使用copy关键字来修饰block？</h4><p>block其实包含两个组成部分：</p>
+<ul>
+<li><code>block</code>所执行的代码，这一部分在编译的时候已经确定</li>
+<li><code>block</code>执行时所需要的外部变量值的数据结构</li>
+</ul>
+<p>根据block在内存中的位置，系统将block分为3类：</p>
+<ol>
+<li><p>NSGlobalBlcok</p>
+<p>该类型的<code>block</code>类似函数，内存地址位于内存全局区。<u>只要block没有对作用域中局部变量进行引用</u>，此<code>block</code>会被系统设置为该类。对于<code>NSGlobalBlock</code>类型的<code>block</code>无需做更多的处理，即使使用<code>copy</code>关键字修饰，系统也不会改变<code>block</code>的内存地址，操作无效。</p>
+</li>
+<li><p>NSStackBlock</p>
+<p>该类型的<code>block</code>内存位于栈，其生命周期由函数决定，函数返回后<code>block</code>将无效。</p>
+<p><code>MRC</code>环境下，若<code>block</code>内部引用了局部变量，此<code>block</code>就会被系统设置为该类型。对于<code>NSStackBlock</code>类型的<code>block</code>，使用<code>retain</code>和<code>release</code>操作都是无效的，必须调用<code>Block_copy</code>()方法，或者使用<code>copy</code>修饰，将<code>block</code>的内存地址从栈转移到堆，此时的<code>block</code>就会转变为<code>NSMallocBlock</code>类型，这也是一直使用<code>copy</code>修饰<code>block</code>的原因。</p>
+<p>在<code>ARC</code>环境下，若<code>block</code>内部引用了局部变量，系统会默认使用<code>copy</code>对block进行修饰，使其变成<code>NSMallocBlock</code>类型，所以<u>在ARC环境下，不需要手动使用copy关键字来修饰block。</u></p>
+</li>
+<li><p>NSMallocBlock</p>
+<p>当对<code>NSStackBlock</code>类型的<code>block</code>进行<code>copy</code>操作后，<code>block</code>会被转化为此类型。在<code>MRC</code>环境下，可以使用<code>retain</code>、<code>release</code>等方法手动管理此类型的生命周期。在<code>ARC</code>环境下，系统会帮助我们自动管理此类型<code>block</code>的生命中周期。</p>
+</li>
+</ol>
+<h4 id="4-在block内部如何修改block外部的变量？"><a href="#4-在block内部如何修改block外部的变量？" class="headerlink" title="4. 在block内部如何修改block外部的变量？"></a>4. 在block内部如何修改block外部的变量？</h4><p><code>block</code>内部修改<code>block</code>外部局部变量时，会提示如下错误：</p>
+<img src="https://raw.githubusercontent.com/GHTYQ/Timg/master/img/202202171715864.png" srcset="/img/loading.gif" lazyload alt="block内部修改外部局部变量" style="zoom: 33%; margin-left: 10px;" />
+
+<p>正确的修改方法为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">__block NSInteger a = 1;<br>void (^myBlock)(NSInteger) = ^(NSInteger b)&#123;<br>    // 代码<br>    a = 2;<br>    NSInteger sum = a+b;<br>    NSLog(@&quot;sum=%ld&quot;,sum);<br>&#125;;<br>myBlock(1);<br></code></pre></td></tr></table></figure>
+
+<p>当外部变量没有使用<code>__block</code>修饰时，<code>block</code>在截获外部的自动变量时会在内部新创建一个新的变量<code>a1</code>来保存所截获的外部变量的瞬时值，之后再<code>block</code>代码中修改的值是成员变量<code>a1</code>的值。伪代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">int a = 1;<br>void block()&#123;<br>  int a1 = a;<br>  a1 += 1;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当外部使用<code>__block</code>修饰时，此时的<code>block</code>保存了对外部变量的指针引用，因此对指针变量的修改会直接影响外部变量的值。伪代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">__block int a = 1;<br>void block()&#123;<br>  int *ptr = &amp;a;<br>  *ptr += 1;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：此处讨论的是自动变量，而静态变量由于默认传给block的就是地址值，所以是可以直接修改的。另外，全局变量和静态全局变量由于作用域很广，也是可以在block中直接被修改的。</p>
+</blockquote>
+<h4 id="5-block中使用self关键字是否一定会导致循环引用"><a href="#5-block中使用self关键字是否一定会导致循环引用" class="headerlink" title="5. block中使用self关键字是否一定会导致循环引用?"></a>5. block中使用self关键字是否一定会导致循环引用?</h4><p>在<code>block</code> 中使用<code>self</code>关键字并不总会引起循环引用。事实上只有<code>block</code>和<code>self</code>相互持有时，才会导致循环引用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">typedef void (^block)(void);<br>@property(nonatomic,strong)block myblock;<br>@property(nonatomic,copy)NSString *name;<br><br>self.myblock = ^&#123;<br>  	// 由于block会对block中的对象进行持有操作，就相当于持有了其中的对象，此时block中的对象又持有了该block,那么就会造成循环引用<br>    NSString *myName = self.name;<br>    NSLog(@&quot;%@&quot;,myName);<br>&#125;;<br><br></code></pre></td></tr></table></figure>
+
+<p>在实际开发中，主要使用弱引用的方法来避免循环引用的产生。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs objective-c">__weak typeof(self) weakSelf = self;<br>self.myblock = ^&#123;<br>     NSString *myName = weakSelf.name;<br>     NSLog(@&quot;%@&quot;,myName);<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>下面是不会造成循环引用的几种情况：</p>
+<ol>
+<li>大部分GCD方法</li>
+<li>block作为临时变量</li>
+<li>block执行过程中self对象被释放。</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><p><a href="">iOS程序面试笔试宝典</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904150359080967">IOS Delegate使用及原理实现</a></p>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/iOS/">iOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%87%E8%80%83/">备考</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-KVO%E4%B8%8EKVC/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">iOS_KVO与KVC</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/19/iOS/%E5%A4%87%E8%80%83/OC%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E7%9B%B8%E5%85%B3/iOS-Category%E5%92%8CExtension/">
+                        <span class="hidden-mobile">iOS_Category和Extension</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"391336e02715065926b8","clientSecret":"daef7899351589e3c4f4abec997213f787648d4f","repo":"GHTYQ.github.io","owner":"GHTYQ","admin":["GHTYQ"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '56b3582268b120395012a75626a12016'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

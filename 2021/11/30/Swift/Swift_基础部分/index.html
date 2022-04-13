@@ -1,0 +1,667 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="好记性不如烂笔头！">
+  <meta name="author" content="TaylorTian">
+  <meta name="keywords" content="iOS,OC,Swift">
+  <meta name="description" content="1. 常量和变量定义：常量和变量把一个名字和一个指定类型的值关联起来。常量的值一旦设定就不能改变，而变量的值可以随意更改。 1.1 常量和变量的声明用let来声明常量，var声明变量 可以在一行中声明多个常量或者多个变量，用逗号隔开 1var x &#x3D; 0.0, y &#x3D; 1.0, z &#x3D; 2.0  1.2 类型注解例： 1var welcome: String  “声明一个类型为String，名字为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift_基础部分">
+<meta property="og:url" content="https://ghtyq.github.io/2021/11/30/Swift/Swift_%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/index.html">
+<meta property="og:site_name" content="TaylorTian Blog">
+<meta property="og:description" content="1. 常量和变量定义：常量和变量把一个名字和一个指定类型的值关联起来。常量的值一旦设定就不能改变，而变量的值可以随意更改。 1.1 常量和变量的声明用let来声明常量，var声明变量 可以在一行中声明多个常量或者多个变量，用逗号隔开 1var x &#x3D; 0.0, y &#x3D; 1.0, z &#x3D; 2.0  1.2 类型注解例： 1var welcome: String  “声明一个类型为String，名字为">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-30T23:22:09.000Z">
+<meta property="article:modified_time" content="2022-04-13T03:36:42.962Z">
+<meta property="article:author" content="TaylorTian">
+<meta property="article:tag" content="Swift">
+<meta property="article:tag" content="Swift学习">
+<meta name="twitter:card" content="summary_large_image">
+  
+  <title>Swift_基础部分 - TaylorTian Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"ghtyq.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Daily</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/background2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Swift_基础部分">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-30 23:22" pubdate>
+        2021年11月30日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Swift_基础部分</h1>
+            
+            <div class="markdown-body">
+              <h3 id="1-常量和变量"><a href="#1-常量和变量" class="headerlink" title="1. 常量和变量"></a>1. 常量和变量</h3><p>定义：常量和变量<code>把一个名字和一个指定类型的值关联起来</code>。常量的值一旦设定就不能改变，而变量的值可以随意更改。</p>
+<h6 id="1-1-常量和变量的声明"><a href="#1-1-常量和变量的声明" class="headerlink" title="1.1 常量和变量的声明"></a>1.1 常量和变量的声明</h6><p>用let来声明常量，var声明变量</p>
+<p>可以在一行中声明多个常量或者多个变量，用逗号隔开</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">var</span> x <span class="hljs-operator">=</span> <span class="hljs-number">0.0</span>, y <span class="hljs-operator">=</span> <span class="hljs-number">1.0</span>, z <span class="hljs-operator">=</span> <span class="hljs-number">2.0</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="1-2-类型注解"><a href="#1-2-类型注解" class="headerlink" title="1.2 类型注解"></a>1.2 类型注解</h6><p>例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">var</span> welcome: <span class="hljs-type">String</span><br></code></pre></td></tr></table></figure>
+
+<p>“声明一个类型为String，名字为welcome的变量”</p>
+<p>你可以在一行中定义多个同类型的变量，用逗号隔开，并在最后一个变量名称后面添加注解</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">var</span> x, y, z: <span class="hljs-type">Double</span>	<br></code></pre></td></tr></table></figure>
+
+<h6 id="1-3-常量和变量的命名"><a href="#1-3-常量和变量的命名" class="headerlink" title="1.3 常量和变量的命名"></a>1.3 常量和变量的命名</h6><ul>
+<li><p>常量和变量名可以包含几乎所有的字符，包括 Unicode 字符。</p>
+</li>
+<li><p>常量与变量名不能包含数学符号，箭头，保留的（或者非法的）Unicode 码位，连线与制表符。也不能以数字开头，但是可以在常量与变量名的其他地方包含数字。</p>
+</li>
+</ul>
+<h6 id="1-4-输出常量和变量"><a href="#1-4-输出常量和变量" class="headerlink" title="1.4 输出常量和变量"></a>1.4 输出常量和变量</h6><p>可以使用<code>print(_:separator:terminator:）</code>函数来输出当前常量和变量的值，默认以<code>separator:&quot; &quot;</code>分割，以<code>terminator:&quot;\n&quot;</code>结束</p>
+<h3 id="2-注释"><a href="#2-注释" class="headerlink" title="2. 注释"></a>2. 注释</h3><ol>
+<li><p>单行注释（<code>//</code>）</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-comment">// 这是单行注释</span><br></code></pre></td></tr></table></figure></li>
+<li><p>多行注释，开始（<code>/*</code>），结束（*<code>/</code>）</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-comment">/*这是多行注释</span><br><span class="hljs-comment">多行注释*/</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="3-分号"><a href="#3-分号" class="headerlink" title="3. 分号"></a>3. 分号</h3><p>不强求每条语句结尾处都使用分号（<code>;</code>）,看个人习惯。但是同一行内有多条独立的语句的时候，必须使用分号。</p>
+<h3 id="4-整数"><a href="#4-整数" class="headerlink" title="4.  整数"></a>4.  整数</h3><p>整数可以是<code>有符号</code>（正、负、零）或者<code>无符号</code>（正、零）</p>
+<p>swift提供了8、6、32、64位有符号或者无符号整数类型。</p>
+<p>例：</p>
+<p>​        8位无符号整数类型： <code>UInt8</code></p>
+<p>​        32位有符号整数类型：<code>Int32</code></p>
+<h6 id="4-1-整数范围"><a href="#4-1-整数范围" class="headerlink" title="4.1 整数范围"></a>4.1 整数范围</h6><p>你可以通过min和max属性来获取对应类型的最小值和最大值</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> minValue <span class="hljs-operator">=</span> <span class="hljs-type">UInt8</span>.min  <span class="hljs-comment">// minValue 为 0，是 UInt8 类型</span><br><span class="hljs-keyword">let</span> maxValue <span class="hljs-operator">=</span> <span class="hljs-type">UInt8</span>.max  <span class="hljs-comment">// maxValue 为 255，是 UInt8 类型	</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="4-2-Int"><a href="#4-2-Int" class="headerlink" title="4.2 Int"></a>4.2 Int</h6><p>一般来说不需要单独指定整数的长度，Swift提供了一个特殊的整数类型<code>Int</code>,长度与当前平台的原生字长相同</p>
+<ul>
+<li>在32位平台上，<code>Int</code>和<code>Int32</code>长度相同</li>
+<li>在64位平台上，<code>Int</code>和I<code>nt64</code>长度相同</li>
+</ul>
+<h6 id="4-3-UInt"><a href="#4-3-UInt" class="headerlink" title="4.3 UInt"></a>4.3 UInt</h6><p>Swift 也提供了一个特殊的无符号类型<code>UInt</code>,长度与当前平台原生字长相同。</p>
+<h3 id="5-浮点数"><a href="#5-浮点数" class="headerlink" title="5. 浮点数"></a>5. 浮点数</h3><p>浮点数类型比整数类型表示的范围更大，可以存储比<code>Int</code>类型更大或者更小的数字。Swift提供了两种有符号的浮点数类型：</p>
+<ul>
+<li><code>Double</code>表示64位浮点数。当你存储很大或者很高精度的浮点数时使用此类型。</li>
+<li><code>Float</code>标书32位浮点数。精度要求不高的话可以使用此类型。</li>
+</ul>
+<h3 id="6-类型安全和类型推断"><a href="#6-类型安全和类型推断" class="headerlink" title="6. 类型安全和类型推断"></a>6. 类型安全和类型推断</h3><ol>
+<li><p>类型安全</p>
+<p>Swift是类型安全的，它会在编译你的代码时进行类型检查，并把不匹配的类型标记为错误。</p>
+</li>
+<li><p>类型推断</p>
+<p>当你声明常量或者变量的时候赋给它们一个字面量即可触发类型推断。</p>
+<p>例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> pi <span class="hljs-operator">=</span> <span class="hljs-number">3.14159</span><br><span class="hljs-comment">// pi 会被类型推断为Double类型</span><br></code></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<p>当推断浮点数类型的时候，Swift总会选择Double而不是Float</p>
+</li>
+</ol>
+<h3 id="7-数值型字面量"><a href="#7-数值型字面量" class="headerlink" title="7. 数值型字面量"></a>7. 数值型字面量</h3><ol>
+<li><p>整数字面量</p>
+<p>整数字面量可以被写作：</p>
+<ul>
+<li>一个十进制数，没有前缀</li>
+<li>一个二进制数，前缀是<code>0b</code></li>
+<li>一个八进制数，前缀是<code>0o</code></li>
+<li>一个十六进制数，前缀是<code>0x</code></li>
+</ul>
+</li>
+<li><p>浮点数字面量</p>
+<p>浮点字面量可以是十进制（没有前缀）或者是十六进制（前缀是 0x ）。小数点两边必须有至少一个十进制数字（或者是十六进制的数字）。十进制浮点数也可以有一个可选的指数（exponent)，通过大写或者小写的 e 来指定；十六进制浮点数必须有一个指数，通过大写或者小写的 p 来指定。</p>
+</li>
+<li><p>额外的格式</p>
+<p>数值类字面量可以包括额外的格式来增强可读性。整数和浮点数都可以添加额外的零并且包含下划线，并不会影响字面量：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> a <span class="hljs-operator">=</span> <span class="hljs-number">000123.456</span><br><span class="hljs-keyword">let</span> b <span class="hljs-operator">=</span> <span class="hljs-number">1_000_0000</span><br><span class="hljs-keyword">let</span> c <span class="hljs-operator">=</span> <span class="hljs-number">1_000_000.000_000_1</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="8-数值类型转换"><a href="#8-数值类型转换" class="headerlink" title="8. 数值类型转换"></a>8. 数值类型转换</h3><p>要将一种数字类型转换为另一种，你要用当前值来初始化一个期望类型的新数字，这个数字的类型就是你的目标类型。</p>
+<p>当前值转化为期望类型值：<code>期望类型(当前值) = 期望值</code></p>
+<h6 id="8-1-整数转化"><a href="#8-1-整数转化" class="headerlink" title="8.1 整数转化"></a>8.1 整数转化</h6><p>常量 <code>one</code> 是 <code>UInt16</code> 类型，然而常量 <code>two</code> 是 <code>UInt8</code> 类型。它们不能直接相加，因为它们类型不同。所以要调用 <code>UInt16(two)</code> 来创建一个新的 <code>UInt16</code> 数字并用 <code>two</code> 的值来初始化，然后使用这个新数字来计算。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> one: <span class="hljs-type">UInt16</span> <span class="hljs-operator">=</span> <span class="hljs-number">1_000</span><br><span class="hljs-keyword">let</span> two: <span class="hljs-type">UInt8</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span><br><span class="hljs-keyword">let</span> sum <span class="hljs-operator">=</span> two <span class="hljs-operator">+</span> <span class="hljs-type">UInt16</span>(two)<br></code></pre></td></tr></table></figure>
+
+<p>现在两个数字的类型都是 <code>UInt16</code>，可以进行相加。目标常量 <code>sum</code> 的类型被推断为 <code>UInt16</code>，因为它是两个 <code>UInt16</code> 值的和</p>
+<h6 id="8-2-整数和浮点数转换"><a href="#8-2-整数和浮点数转换" class="headerlink" title="8.2 整数和浮点数转换"></a>8.2 整数和浮点数转换</h6><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> one <span class="hljs-operator">=</span> <span class="hljs-number">1</span><br><span class="hljs-keyword">let</span> two <span class="hljs-operator">=</span> <span class="hljs-number">0.14159</span><br><span class="hljs-keyword">let</span> sum <span class="hljs-operator">=</span> <span class="hljs-type">Double</span>(one) <span class="hljs-operator">+</span> two<br></code></pre></td></tr></table></figure>
+
+<p>这个例子中，常量 <code>one</code> 的值被用来创建一个 <code>Double</code> 类型的值，所以加号两边的数类型须相同。如果不进行转换，两者无法相加。</p>
+<h3 id="9-类型别名"><a href="#9-类型别名" class="headerlink" title="9. 类型别名"></a>9. 类型别名</h3><p>类型别名：给现有的类型定义另外一个名字。你可以使用<code>typealias</code>关键字来定义类型别名。</p>
+<h3 id="10-布尔值"><a href="#10-布尔值" class="headerlink" title="10. 布尔值"></a>10. 布尔值</h3><p>布尔值（Bool）指逻辑上的值，只能是真或者假，用布尔常量<code>true</code>和<code>false</code>表示。</p>
+<h3 id="11-元祖"><a href="#11-元祖" class="headerlink" title="11. 元祖"></a>11. 元祖</h3><p>元祖（tuples）把多个值组合成一个复合值。元祖内的值可以是任意类型，并不要求是相同类型。</p>
+<p>例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> http404Error <span class="hljs-operator">=</span> (<span class="hljs-number">404</span>,<span class="hljs-string">&quot;Not Found&quot;</span>) <span class="hljs-comment">//http404Error 的类型是 (Int, String)，值是 (404, &quot;Not Found&quot;)</span><br></code></pre></td></tr></table></figure>
+
+<ol>
+<li><p>将元祖内容分解为单独的常量或者变量</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> (statusCode, statusMessage) <span class="hljs-operator">=</span> http404Errorprint(<span class="hljs-string">&quot;The status code is <span class="hljs-subst">\(statusCode)</span>&quot;</span>)<br><span class="hljs-comment">// 输出“The status code is 404”</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;The status message is <span class="hljs-subst">\(statusMessage)</span>&quot;</span>)<br><span class="hljs-comment">// 输出“The status message is Not Found”</span><br></code></pre></td></tr></table></figure></li>
+<li><p>只需要一部分元祖值时，分解的时候可以把要忽略的部分用下划线（_）标记</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> (justTheStatusCode, <span class="hljs-keyword">_</span>) <span class="hljs-operator">=</span> http404Errorprint(<span class="hljs-string">&quot;The status code is <span class="hljs-subst">\(justTheStatusCode)</span>&quot;</span>)<br><span class="hljs-comment">// 输出“The status code is 404”</span><br></code></pre></td></tr></table></figure></li>
+<li><p>通过下标来访问元祖的单个元素，下标从零开始</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;The status code is <span class="hljs-subst">\(http404Error.<span class="hljs-number">0</span>)</span>&quot;</span>)<br><span class="hljs-comment">// 输出“The status code is 404”</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;The status message is <span class="hljs-subst">\(http404Error.<span class="hljs-number">1</span>)</span>&quot;</span>)<br><span class="hljs-comment">// 输出“The status message is Not Found”</span><br></code></pre></td></tr></table></figure></li>
+<li><p>定义元祖的时候给单个元素命名，通过名字来获取这些元素的值</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> http200Status <span class="hljs-operator">=</span> (statusCode: <span class="hljs-number">200</span>, description: <span class="hljs-string">&quot;OK&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;The status code is <span class="hljs-subst">\(http200Status.statusCode)</span>&quot;</span>)<br><span class="hljs-comment">// 输出“The status code is 200”</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;The status message is <span class="hljs-subst">\(http200Status.description)</span>&quot;</span>)<br><span class="hljs-comment">// 输出“The status message is OK”</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="12-可选类型"><a href="#12-可选类型" class="headerlink" title="12. 可选类型"></a>12. 可选类型</h3><p>使用可选类型（optionals）来处理值可能缺失的情况，可选类型表示两种可能：有值（可通过解析可选类型访问这个值）、无值</p>
+<h6 id="12-1-nil"><a href="#12-1-nil" class="headerlink" title="12.1 nil"></a>12.1 nil</h6><p>你可以给可选变量赋值为<code>nil</code>，来表示它没值</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">var</span> code: <span class="hljs-type">Int</span>? <span class="hljs-operator">=</span> <span class="hljs-number">404</span> <span class="hljs-comment">// code 包含一个可选的Int值404</span><br>code <span class="hljs-operator">=</span> <span class="hljs-literal">nil</span> <span class="hljs-comment">// code 现在不包含值</span><br></code></pre></td></tr></table></figure>
+
+<p>如果你声明了一个可选类型的常量或者变量但是没有赋值，它们会自动被设置为nil</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">var</span> str: <span class="hljs-type">String</span>? <span class="hljs-comment">// str 被自动设置为 nil</span><br></code></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<p>Swift 的<code>nil</code>和OC中的<code>nil</code>不一样，在OC中，<code>nil</code>是一个指向不存在对象的指针。在Swift中，<code>nil</code>并不是指针–它是一个确定的值，用来表示值缺失。任何类型可选状态都可以设置为nil，不只是对象类型。</p>
+<h6 id="12-2-if语句以及强制解析"><a href="#12-2-if语句以及强制解析" class="headerlink" title="12.2 if语句以及强制解析"></a>12.2 if语句以及强制解析</h6><p>你可以使用<code>if</code>语句和<code>nil</code>比较来判断一个可选值是否有值。可以使用相等（<code>==</code>）或者不等（<code>!=</code>）来执行比较。</p>
+<p>当你确定可选类型有值的时候，可以在可选的名称后面加个感叹号（<code>!</code>）来获取值。这个感叹号表示”我知道这个可选有值，请使用它。“这被称为可选项的<em>强制解析</em>。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> possibleNumber <span class="hljs-operator">=</span> <span class="hljs-string">&quot;123&quot;</span><br><span class="hljs-keyword">let</span> convertedNumber <span class="hljs-operator">=</span> <span class="hljs-type">Int</span>(possibleNumber)<span class="hljs-comment">// convertedNumber 被推测为类型 &quot;Int?&quot;， 或者类型 &quot;optional Int&quot;</span><br><span class="hljs-keyword">if</span>  convertedNumber <span class="hljs-operator">!=</span> <span class="hljs-literal">nil</span> &#123;    <br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;convertedNumber has an integer value of <span class="hljs-subst">\(convertedNumber<span class="hljs-operator">!</span>)</span>.&quot;</span>)<br>&#125;<br><span class="hljs-comment">// 输出“convertedNumber has an integer value of 123.”</span><br></code></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<p>使用<code>！</code>进行强制解析之前，一定要确定可选项包含一个非<code>nil</code>的值。</p>
+<h6 id="12-3-可选绑定"><a href="#12-3-可选绑定" class="headerlink" title="12.3 可选绑定"></a>12.3 可选绑定</h6><p>使用可选绑定（optional binding）来判断可选类型是否包含值，如果包含就把值赋值给一个临时的常量或者变量。</p>
+<p>例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> actualNumber <span class="hljs-operator">=</span> <span class="hljs-type">Int</span>(possibleNumber) &#123;    <br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\&#x27;</span><span class="hljs-subst">\(possibleNumber)</span><span class="hljs-subst">\&#x27;</span> has an integer value of <span class="hljs-subst">\(actualNumber)</span>&quot;</span>)<br>&#125; <span class="hljs-keyword">else</span> &#123;  <br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\&#x27;</span><span class="hljs-subst">\(possibleNumber)</span><span class="hljs-subst">\&#x27;</span> could not be converted to an integer&quot;</span>)<br>&#125;<br><span class="hljs-comment">// 输出“&#x27;123&#x27; has an integer value of 123”</span><br></code></pre></td></tr></table></figure>
+
+<p>这段代码可以被理解为：</p>
+<p>“如果 Int(possibleNumber) 返回的可选 <code>Int</code> 包含一个值，创建一个叫做 actualNumber 的新常量并将可选包含的值赋给它。”</p>
+<p>如果转换成功，<code>actualNumber</code>常量可以在if语句的第一个分支中使用。它已经被可选类型包含的值初始化过，所以不需要再使用<code>！</code>后缀来获取它的值。</p>
+<p>你可以在可选绑定中使用常量和变量。如果你想在 <code>if</code> 语句的第一个分支中操作 <code>actualNumber</code> 的值，你可以改成 <code>if var actualNumber</code>，这样可选类型包含的值就会被赋给一个变量而非常量。</p>
+<p>你可以包含多个可选绑定或多个布尔条件在一个<code>if</code>语句中，只要用逗号隔开就行。只要任意一个可选绑定的值为<code>nil</code>，或者任意一个布尔条件为<code>false</code>，则整个<code>if</code>条件判断为<code>false</code>。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> firstNumber <span class="hljs-operator">=</span> <span class="hljs-type">Int</span>(<span class="hljs-string">&quot;4&quot;</span>), <span class="hljs-keyword">let</span> secondNumber <span class="hljs-operator">=</span> <span class="hljs-type">Int</span>(<span class="hljs-string">&quot;42&quot;</span>), firstNumber <span class="hljs-operator">&lt;</span> secondNumber <span class="hljs-operator">&amp;&amp;</span> secondNumber <span class="hljs-operator">&lt;</span> <span class="hljs-number">100</span> &#123;   <br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(firstNumber)</span> &lt; <span class="hljs-subst">\(secondNumber)</span> &lt; 100&quot;</span>)<br>&#125;<br><span class="hljs-comment">// 输出“4 &lt; 42 &lt; 100”</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="12-4-隐示解析可选类型"><a href="#12-4-隐示解析可选类型" class="headerlink" title="12.4 隐示解析可选类型"></a>12.4 隐示解析可选类型</h6><p>把想要用作可选类型的后面的问号（String?）改为感叹号（String!）来声明一个隐示解析的可选类型。</p>
+<p>一个隐示解析可选类型其实就是一个普通的可选类型，但是可以被当做非可选类型来使用，并不需要每次都使用解析来获取可选值。</p>
+<p>例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> possibleString: <span class="hljs-type">String</span>? <span class="hljs-operator">=</span> <span class="hljs-string">&quot;An optional string.&quot;</span><br><span class="hljs-keyword">let</span> forcedString: <span class="hljs-type">String</span> <span class="hljs-operator">=</span> possibleString<span class="hljs-operator">!</span> <span class="hljs-comment">// 需要感叹号来获取值</span><br><span class="hljs-keyword">let</span> assumedString: <span class="hljs-type">String</span>! <span class="hljs-operator">=</span> <span class="hljs-string">&quot;An implicitly unwrapped optional string.&quot;</span><br><span class="hljs-keyword">let</span> implicitString: <span class="hljs-type">String</span> <span class="hljs-operator">=</span> assumedString  <span class="hljs-comment">// 不需要感叹号</span><br></code></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<p>当可选类型被第一次赋值之后就可以确定之后一直有值的时候，隐式解析可选类型非常有用。如果一个变量之后可能变成<code>nil</code>的话请不要使用隐示解析可选类型。如果你需要在变量的生命周期中判断是否是<code>nil</code>的话，请使用普通可选类型。</p>
+<h3 id="13-错误处理"><a href="#13-错误处理" class="headerlink" title="13. 错误处理"></a>13. 错误处理</h3><p>你可以使用 错误处理（error handling） 来应对程序执行中可能会遇到的错误条件。</p>
+<p>相对于可选中运用值的存在与缺失来表达函数的成功与失败，错误处理可以推断失败的原因，并传播至程序的其他部分。</p>
+<p>当一个函数遇到错误条件，它能报错。调用函数的地方能抛出错误消息并合理处理。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">canThrowAnError</span>()</span> <span class="hljs-keyword">throws</span> &#123;   <br>  <span class="hljs-comment">// 这个函数有可能抛出错误</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>一个函数可以通过在声明中添加 throws 关键词来抛出错误消息。当你的函数能抛出错误消息时，你应该在表达式中前置 try 关键词。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">do</span> &#123;    <br>  <span class="hljs-keyword">try</span> canThrowAnError()   <br>  <span class="hljs-comment">// 没有错误消息抛出</span><br>&#125; <span class="hljs-keyword">catch</span> &#123;   <br>  <span class="hljs-comment">// 有一个错误消息抛出</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>一个 do 语句创建了一个新的包含作用域，使得错误能被传播到一个或多个 catch 从句。</p>
+<h3 id="14-断言和先决条件"><a href="#14-断言和先决条件" class="headerlink" title="14. 断言和先决条件"></a>14. 断言和先决条件</h3><p>断言和先决条件是在运行时所做的检查。你可以用他们来检查在执行后续代码之前是否一个必要的条件已经被满足了。如果断言或者先决条件中的布尔条件评估的结果为 true（真），则代码像往常一样继续执行。如果布尔条件评估结果为 false（假），程序的当前状态是无效的，则代码执行结束，应用程序中止。</p>
+<p>断言和先决条件的不同点是，他们什么时候进行状态检测：断言仅在调试环境运行，而先决条件则在调试环境和生产环境中运行。在生产环境中，断言的条件将不会进行评估。这个意味着你可以使用很多断言在你的开发阶段，但是这些断言在生产环境中不会产生任何影响。</p>
+<h6 id="14-1-使用断言进行调试"><a href="#14-1-使用断言进行调试" class="headerlink" title="14.1 使用断言进行调试"></a>14.1 使用断言进行调试</h6><p>你可以调用 Swift 标准库的 <code>c(_:_:file:line:)</code> 函数来写一个断言。向这个函数传入一个结果为 true 或者 false 的表达式以及一条信息，当表达式的结果为 false 的时候这条信息会被显示。</p>
+<p>例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">let</span> age <span class="hljs-operator">=</span> <span class="hljs-operator">-</span><span class="hljs-number">3</span><br><span class="hljs-built_in">assert</span>(age <span class="hljs-operator">&gt;=</span> <span class="hljs-number">0</span>, <span class="hljs-string">&quot;A person&#x27;s age cannot be less than zero&quot;</span>) <span class="hljs-comment">// 因为 age &lt; 0，所以断言会触发</span><br><span class="hljs-comment">//如果不需要断言信息，可以就像这样忽略掉</span><br><span class="hljs-built_in">assert</span>(age <span class="hljs-operator">&gt;=</span> <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure>
+
+<p>如果代码已经检查了条件，你可以使用 assertionFailure(_:file:line:) 函数来表明断言失败了.</p>
+<p>例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">if</span> age <span class="hljs-operator">&gt;</span> <span class="hljs-number">10</span> &#123;  <br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;You can ride the roller-coaster or the ferris wheel.&quot;</span>)<br>&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> age <span class="hljs-operator">&gt;</span> <span class="hljs-number">0</span> &#123;  <br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;You can ride the ferris wheel.&quot;</span>)<br>&#125; <span class="hljs-keyword">else</span> &#123;    <br>  <span class="hljs-built_in">assertionFailure</span>(<span class="hljs-string">&quot;A person&#x27;s age can&#x27;t be less than zero.&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="14-2-强制执行先决条件"><a href="#14-2-强制执行先决条件" class="headerlink" title="14.2 强制执行先决条件"></a>14.2 强制执行先决条件</h6><p>你可以使用全局 precondition(<em>:</em>:file:line:) 函数来写一个先决条件。向这个函数传入一个结果为 true 或者 false 的表达式以及一条信息，当表达式的结果为 false 的时候这条信息会被显示。</p>
+<p>例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-comment">// 在一个下标的实现里...precondition(index &gt; 0, &quot;Index must be greater than zero.&quot;)</span><br></code></pre></td></tr></table></figure>
+
+<p>你可以调用 preconditionFailure(_:file:line:) 方法来表明出现了一个错误。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/iOS/">iOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Swift/">Swift</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Swift%E5%AD%A6%E4%B9%A0/">Swift学习</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/12/10/iOS/iOS%E5%90%84%E6%9C%BA%E5%9E%8B%E6%AF%94%E8%BE%83/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">iOS各机型比较</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/30/Swift/Swift_%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97%E7%AC%A6/">
+                        <span class="hidden-mobile">Swift_基本运算符</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"391336e02715065926b8","clientSecret":"daef7899351589e3c4f4abec997213f787648d4f","repo":"GHTYQ.github.io","owner":"GHTYQ","admin":["GHTYQ"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'e4001689ed90d36da825b45b4676ef07'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
